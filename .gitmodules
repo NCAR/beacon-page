@@ -1,0 +1,4 @@
+[submodule "beacon-dev"]
+	path = beacon-dev
+	url = git@github.com:NCAR/beacon-dev.git
+	branch = metadata-and-portal
