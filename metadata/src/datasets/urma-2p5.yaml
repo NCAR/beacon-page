@@ -1,0 +1,73 @@
+schema_version: 0.2.0
+id: urma-2p5
+title: NCEP URMA 2.5 km CONUS surface analysis
+short_name: URMA
+kind: analysis
+producer: NOAA/NWS/NCEP
+format: grib2
+
+spatial:
+  type: grid
+  bbox: [-138.37, 19.23, -59.04, 57.09]
+  grid: {projection: lambert_conformal, nx: 2345, ny: 1597, resolution: 2.5 km}
+
+time:
+  coverage: {start: 2014-01-28T00:00Z, end: null}
+  frequency: PT1H
+
+locations:
+  - id: nodd-aws
+    provider: nodd
+    access: https
+    retention: permanent
+    coverage: {start: 2020-01-01T00:00Z}
+    files:
+      anl:
+        template: "https://noaa-urma-pds.s3.amazonaws.com/urma2p5.{valid?fmt=%Y%m%d}/urma2p5.t{valid?fmt=%H}z.2dvaranl_ndfd.grb2_wexp"
+        index: wgrib2
+      pcp_01h:
+        template: "https://noaa-urma-pds.s3.amazonaws.com/urma2p5.{valid?fmt=%Y%m%d}/urma2p5.{valid?fmt=%Y%m%d%H}.pcp_01h.wexp.grb2"
+        index: wgrib2
+      pcp_06h:
+        template: "https://noaa-urma-pds.s3.amazonaws.com/urma2p5.{valid?fmt=%Y%m%d}/urma2p5.{valid?fmt=%Y%m%d%H}.pcp_06h.wexp.grb2"
+        index: wgrib2
+        valid_hours: [0, 6, 12, 18]
+    notes: >-
+      The bucket starts at urma2p5.20140128, but older file names differ
+      (e.g. pcpurma_g184.2015010100.06h.grb2). These templates were checked
+      for 2020-01-01; the exact date the names changed was not checked.
+  - id: nomads
+    provider: nomads
+    access: https
+    retention: P14D
+    files:
+      anl:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/urma/prod/urma2p5.{valid?fmt=%Y%m%d}/urma2p5.t{valid?fmt=%H}z.2dvaranl_ndfd.grb2_wexp"
+        index: wgrib2
+      pcp_06h:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/urma/prod/urma2p5.{valid?fmt=%Y%m%d}/urma2p5.{valid?fmt=%Y%m%d%H}.pcp_06h.wexp.grb2"
+        index: wgrib2
+        valid_hours: [0, 6, 12, 18]
+
+variables:
+  - {quantity: air_temperature, level: {type: height_above_ground, value: 2}, native: {name: TMP}, file: anl}
+  - {quantity: dew_point_temperature, level: {type: height_above_ground, value: 2}, native: {name: DPT}, file: anl}
+  - {quantity: specific_humidity, level: {type: height_above_ground, value: 2}, native: {name: SPFH}, file: anl}
+  - {quantity: eastward_wind, level: {type: height_above_ground, value: 10}, native: {name: UGRD}, file: anl}
+  - {quantity: northward_wind, level: {type: height_above_ground, value: 10}, native: {name: VGRD}, file: anl}
+  - {quantity: wind_speed, level: {type: height_above_ground, value: 10}, native: {name: WIND}, file: anl}
+  - {quantity: surface_air_pressure, level: {type: surface}, native: {name: PRES}, file: anl}
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT1H}
+    native: {name: APCP}
+    file: pcp_01h
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT6H}
+    native: {name: APCP}
+    file: pcp_06h
+    notes: The file time is the end of the window; the GRIB reference time is its start.
+
+quality:
+  flag: unknown

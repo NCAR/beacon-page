@@ -1,0 +1,97 @@
+schema_version: 0.2.0
+id: stage-iv
+title: NCEP Stage IV multi-sensor precipitation analysis (CONUS)
+short_name: Stage IV
+description: >-
+  Gauge and radar precipitation analysis mosaicked by NCEP from River
+  Forecast Center analyses.
+kind: analysis
+producer: NOAA/NWS/NCEP
+identifiers:
+  - {scheme: gdex, value: d507005}
+  - {scheme: doi, value: 10.5065/D69Z93M3}
+format: grib2
+
+spatial:
+  type: grid
+  bbox: [-134.04, 19.81, -59.96, 57.84]
+  grid: {projection: polar_stereographic, nx: 1121, ny: 881, resolution: 4.76 km (HRAP)}
+
+time:
+  coverage: {start: 2002-01-01T00:00Z, end: null}
+  frequency: PT1H
+
+locations:
+  - id: gdex-glade
+    provider: gdex
+    access: posix
+    retention: permanent
+    coverage: {start: 2020-07-29T00:00Z}
+    files:
+      st4_01h:
+        template: "/glade/campaign/collections/gdex/data/d507005/stage4/stage4.{valid?fmt=%Y%m}.tar"
+        members: ["ST4.{valid?fmt=%Y%m%d}", "st4_conus.{valid?fmt=%Y%m%d%H}.01h.grb2"]
+      st4_06h:
+        template: "/glade/campaign/collections/gdex/data/d507005/stage4/stage4.{valid?fmt=%Y%m}.tar"
+        members: ["ST4.{valid?fmt=%Y%m%d}", "st4_conus.{valid?fmt=%Y%m%d%H}.06h.grb2"]
+        valid_hours: [0, 6, 12, 18]
+      st4_24h:
+        template: "/glade/campaign/collections/gdex/data/d507005/stage4/stage4.{valid?fmt=%Y%m}.tar"
+        members: ["ST4.{valid?fmt=%Y%m%d}", "st4_conus.{valid?fmt=%Y%m%d%H}.24h.grb2"]
+        valid_hours: [12]
+    notes: >-
+      One tar per month, holding one tar per day. Monthly tars appear after
+      the month ends (stage4.202609.tar existed on 2026-10-22). Members
+      before 2020-07-29 are GRIB1 files named ST4.YYYYMMDDHH.06h.gz.
+  - id: gdex-https
+    provider: gdex
+    access: https
+    retention: permanent
+    coverage: {start: 2020-07-29T00:00Z}
+    files:
+      st4_06h:
+        template: "https://data.gdex.ucar.edu/d507005/stage4/stage4.{valid?fmt=%Y%m}.tar"
+        members: ["ST4.{valid?fmt=%Y%m%d}", "st4_conus.{valid?fmt=%Y%m%d%H}.06h.grb2"]
+        valid_hours: [0, 6, 12, 18]
+    notes: Whole monthly tar per download (about 300 MB).
+  - id: nomads
+    provider: nomads
+    access: https
+    retention: P14D
+    files:
+      st4_01h:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/pcpanl/prod/pcpanl.{valid?fmt=%Y%m%d}/st4_conus.{valid?fmt=%Y%m%d%H}.01h.grb2"
+        index: none
+      st4_06h:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/pcpanl/prod/pcpanl.{valid?fmt=%Y%m%d}/st4_conus.{valid?fmt=%Y%m%d%H}.06h.grb2"
+        index: none
+        valid_hours: [0, 6, 12, 18]
+      st4_24h:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/pcpanl/prod/pcpanl.{valid?fmt=%Y%m%d}/st4_conus.{valid?fmt=%Y%m%d%H}.24h.grb2"
+        index: none
+        valid_hours: [12]
+
+variables:
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT1H}
+    native: {name: APCP}
+    file: st4_01h
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT6H}
+    native: {name: APCP}
+    file: st4_06h
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT24H}
+    native: {name: APCP}
+    file: st4_24h
+
+quality:
+  flag: unknown
+
+notes: >-
+  GDEX's own metadata for d507005 is out of date. It lists temporal coverage
+  ending 2025-12, a 1160x880 grid, and GRIB1 format. The files on GLADE run
+  to 2026-09, are 1121x881, and have been GRIB2 since 2020-07-29.

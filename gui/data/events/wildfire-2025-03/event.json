@@ -1,0 +1,778 @@
+{
+  "id": "wildfire-2025-03",
+  "title": "Wildfire, utilities and insurance: 14 March 2025 Southern Plains outbreak",
+  "short_name": "Wildfire: Mar 2025 Southern Plains",
+  "summary": "Compare ECMWF AIFS (AI) with HRRR (full physics) for high winds, low humidity, and the duration of dangerous fire-weather conditions, in the 14 March 2025 Southern Plains outbreak. SPC rated eastern New Mexico, the Texas Panhandle and Oklahoma Extremely Critical; Oklahoma had its windiest day in Mesonet history, with gusts to 90 mph. BEACON retrieves forecasts and observations and evaluates threshold exceedance and warning lead time relevant to utility preparedness and wildfire exposure.",
+  "window": {
+    "start": "2025-03-14T12:00:00Z",
+    "end": "2025-03-16T12:00:00Z"
+  },
+  "display": {
+    "start": "2025-03-12T00:00:00Z",
+    "end": "2025-03-16T12:00:00Z"
+  },
+  "covered": {
+    "start": "2025-03-14T00:00:00Z",
+    "end": "2025-03-16T23:00:00Z"
+  },
+  "danger": [
+    {
+      "quantity": "wind_speed",
+      "column": "wind_ms",
+      "units": "m/s",
+      "met": ">=8.9",
+      "op": ">=",
+      "value": 8.9,
+      "label": "20 mph",
+      "extreme": "max"
+    },
+    {
+      "quantity": "relative_humidity",
+      "column": "rh_pct",
+      "units": "%",
+      "met": "<=15",
+      "op": "<=",
+      "value": 15.0,
+      "label": "15 %",
+      "extreme": "min"
+    }
+  ],
+  "called": {
+    "min_hours": 2,
+    "onset_tolerance_h": 6,
+    "tolerance_range_h": [
+      1,
+      48
+    ]
+  },
+  "models": [
+    {
+      "id": "aifs-single",
+      "display": "AIFS",
+      "kind": "ai",
+      "step_h": 6,
+      "min_times": 1
+    },
+    {
+      "id": "hrrr",
+      "display": "HRRR",
+      "kind": "nwp",
+      "step_h": 1,
+      "min_times": 2
+    }
+  ],
+  "stations": [
+    {
+      "id": "KLBB",
+      "name": "Lubbock, TX",
+      "lat": 33.65,
+      "lon": -101.81,
+      "event": true,
+      "obs_hours": 12,
+      "obs_onset": "2025-03-14T17:00:00Z",
+      "max_wind_ms": 22.737,
+      "min_rh_pct": 10.7592,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T18:00:00Z",
+          "own_onset_err_h": 1.0,
+          "judged_runs": 40,
+          "hits": 10,
+          "misses": 30,
+          "false_alarms": 3,
+          "first_call_lead_h": 83.0,
+          "held_since_lead_h": 53.0
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T17:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 7,
+          "misses": 1,
+          "false_alarms": 0,
+          "first_call_lead_h": 41.0,
+          "held_since_lead_h": 41.0
+        }
+      }
+    },
+    {
+      "id": "KMAF",
+      "name": "Midland, TX",
+      "lat": 31.95,
+      "lon": -102.18,
+      "event": true,
+      "obs_hours": 10,
+      "obs_onset": "2025-03-14T21:00:00Z",
+      "max_wind_ms": 18.5054,
+      "min_rh_pct": 12.383,
+      "models": {
+        "aifs-single": {
+          "judged": false,
+          "own_event": true,
+          "own_onset": "2025-03-14T12:00:00Z",
+          "own_onset_err_h": -9.0,
+          "judged_runs": 0,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T21:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 45.0,
+          "held_since_lead_h": 45.0
+        }
+      }
+    },
+    {
+      "id": "KCDS",
+      "name": "Childress, TX",
+      "lat": 34.43,
+      "lon": -100.28,
+      "event": true,
+      "obs_hours": 6,
+      "obs_onset": "2025-03-14T18:00:00Z",
+      "max_wind_ms": 22.1287,
+      "min_rh_pct": 12.7339,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T18:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 40,
+          "hits": 26,
+          "misses": 14,
+          "false_alarms": 0,
+          "first_call_lead_h": 228.0,
+          "held_since_lead_h": 126.0
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T18:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 6,
+          "misses": 2,
+          "false_alarms": 0,
+          "first_call_lead_h": 36.0,
+          "held_since_lead_h": 36.0
+        }
+      }
+    },
+    {
+      "id": "KSPS",
+      "name": "Wichita Falls, TX",
+      "lat": 33.97,
+      "lon": -98.5,
+      "event": true,
+      "obs_hours": 7,
+      "obs_onset": "2025-03-14T20:00:00Z",
+      "max_wind_ms": 18.0014,
+      "min_rh_pct": 7.2209,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-15T00:00:00Z",
+          "own_onset_err_h": 4.0,
+          "judged_runs": 40,
+          "hits": 37,
+          "misses": 3,
+          "false_alarms": 0,
+          "first_call_lead_h": 224.0,
+          "held_since_lead_h": 188.0
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T20:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 44.0,
+          "held_since_lead_h": 44.0
+        }
+      }
+    },
+    {
+      "id": "KSWO",
+      "name": "Stillwater, OK",
+      "lat": 36.17,
+      "lon": -97.08,
+      "event": true,
+      "obs_hours": 6,
+      "obs_onset": "2025-03-14T19:00:00Z",
+      "max_wind_ms": 17.5285,
+      "min_rh_pct": 10.4778,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-15T00:00:00Z",
+          "own_onset_err_h": 5.0,
+          "judged_runs": 40,
+          "hits": 19,
+          "misses": 21,
+          "false_alarms": 0,
+          "first_call_lead_h": 187.0,
+          "held_since_lead_h": 103.0
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T19:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 43.0,
+          "held_since_lead_h": 43.0
+        }
+      }
+    },
+    {
+      "id": "KABI",
+      "name": "Abilene, TX",
+      "lat": 32.42,
+      "lon": -99.68,
+      "event": true,
+      "obs_hours": 5,
+      "obs_onset": "2025-03-14T21:00:00Z",
+      "max_wind_ms": 16.0378,
+      "min_rh_pct": 8.0132,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-15T00:00:00Z",
+          "own_onset_err_h": 3.0,
+          "judged_runs": 40,
+          "hits": 37,
+          "misses": 3,
+          "false_alarms": 0,
+          "first_call_lead_h": 237.0,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T21:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 45.0,
+          "held_since_lead_h": 45.0
+        }
+      }
+    },
+    {
+      "id": "KLAW",
+      "name": "Lawton, OK",
+      "lat": 34.57,
+      "lon": -98.42,
+      "event": true,
+      "obs_hours": 4,
+      "obs_onset": "2025-03-14T19:00:00Z",
+      "max_wind_ms": 13.8423,
+      "min_rh_pct": 10.1015,
+      "models": {
+        "aifs-single": {
+          "judged": false,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 0,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T19:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 43.0,
+          "held_since_lead_h": 43.0
+        }
+      }
+    },
+    {
+      "id": "KROW",
+      "name": "Roswell, NM",
+      "lat": 33.29,
+      "lon": -104.53,
+      "event": true,
+      "obs_hours": 3,
+      "obs_onset": "2025-03-14T22:00:00Z",
+      "max_wind_ms": 18.4792,
+      "min_rh_pct": 14.0699,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-15T00:00:00Z",
+          "own_onset_err_h": 2.0,
+          "judged_runs": 40,
+          "hits": 9,
+          "misses": 31,
+          "false_alarms": 10,
+          "first_call_lead_h": 190.0,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T22:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 46.0,
+          "held_since_lead_h": 46.0
+        }
+      }
+    },
+    {
+      "id": "KOKC",
+      "name": "Oklahoma City, OK",
+      "lat": 35.4,
+      "lon": -97.6,
+      "event": true,
+      "obs_hours": 3,
+      "obs_onset": "2025-03-14T20:00:00Z",
+      "max_wind_ms": 18.527,
+      "min_rh_pct": 11.7979,
+      "models": {
+        "aifs-single": {
+          "judged": false,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 0,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T20:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 44.0,
+          "held_since_lead_h": 44.0
+        }
+      }
+    },
+    {
+      "id": "KTUL",
+      "name": "Tulsa, OK",
+      "lat": 36.2,
+      "lon": -95.9,
+      "event": true,
+      "obs_hours": 3,
+      "obs_onset": "2025-03-15T02:00:00Z",
+      "max_wind_ms": 14.4184,
+      "min_rh_pct": 8.5403,
+      "models": {
+        "aifs-single": {
+          "judged": false,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 0,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-15T02:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 44.0,
+          "held_since_lead_h": 44.0
+        }
+      }
+    },
+    {
+      "id": "KAMA",
+      "name": "Amarillo, TX",
+      "lat": 35.22,
+      "lon": -101.7,
+      "event": true,
+      "obs_hours": 2,
+      "obs_onset": "2025-03-14T21:00:00Z",
+      "max_wind_ms": 21.6067,
+      "min_rh_pct": 14.586,
+      "models": {
+        "aifs-single": {
+          "judged": false,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 0,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T21:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 8,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": 45.0,
+          "held_since_lead_h": 45.0
+        }
+      }
+    },
+    {
+      "id": "KPNC",
+      "name": "Ponca City, OK",
+      "lat": 36.72,
+      "lon": -97.1,
+      "event": true,
+      "obs_hours": 2,
+      "obs_onset": "2025-03-14T19:00:00Z",
+      "max_wind_ms": 17.5285,
+      "min_rh_pct": 11.7979,
+      "models": {
+        "aifs-single": {
+          "judged": false,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 0,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T19:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 7,
+          "misses": 1,
+          "false_alarms": 0,
+          "first_call_lead_h": 37.0,
+          "held_since_lead_h": 37.0
+        }
+      }
+    },
+    {
+      "id": "KICT",
+      "name": "Wichita, KS",
+      "lat": 37.65,
+      "lon": -97.43,
+      "event": true,
+      "obs_hours": 2,
+      "obs_onset": "2025-03-14T19:00:00Z",
+      "max_wind_ms": 19.0436,
+      "min_rh_pct": 11.2489,
+      "models": {
+        "aifs-single": {
+          "judged": false,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 0,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": true,
+          "own_onset": "2025-03-14T19:00:00Z",
+          "own_onset_err_h": 0.0,
+          "judged_runs": 8,
+          "hits": 0,
+          "misses": 8,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        }
+      }
+    },
+    {
+      "id": "KCSM",
+      "name": "Clinton-Sherman, OK",
+      "lat": 35.33,
+      "lon": -99.2,
+      "event": false,
+      "obs_hours": 0,
+      "obs_onset": null,
+      "max_wind_ms": 23.7124,
+      "min_rh_pct": 17.8692,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 47,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 7,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 16,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 4,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        }
+      }
+    },
+    {
+      "id": "KGAG",
+      "name": "Gage, OK",
+      "lat": 36.29,
+      "lon": -99.77,
+      "event": false,
+      "obs_hours": 1,
+      "obs_onset": null,
+      "max_wind_ms": 20.5653,
+      "min_rh_pct": 12.0127,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 47,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 16,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 7,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        }
+      }
+    },
+    {
+      "id": "KWWR",
+      "name": "Woodward, OK",
+      "lat": 36.44,
+      "lon": -99.52,
+      "event": false,
+      "obs_hours": 0,
+      "obs_onset": null,
+      "max_wind_ms": 21.1483,
+      "min_rh_pct": 16.2848,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 47,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 16,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 7,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        }
+      }
+    },
+    {
+      "id": "KDHT",
+      "name": "Dalhart, TX",
+      "lat": 36.02,
+      "lon": -102.55,
+      "event": false,
+      "obs_hours": 0,
+      "obs_onset": null,
+      "max_wind_ms": 18.5054,
+      "min_rh_pct": 17.452,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 47,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 16,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 3,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        }
+      }
+    },
+    {
+      "id": "KPPA",
+      "name": "Pampa, TX",
+      "lat": 35.6,
+      "lon": -100.98,
+      "event": false,
+      "obs_hours": 0,
+      "obs_onset": null,
+      "max_wind_ms": 24.2365,
+      "min_rh_pct": 18.7137,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 47,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 16,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 5,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        }
+      }
+    },
+    {
+      "id": "KDDC",
+      "name": "Dodge City, KS",
+      "lat": 37.77,
+      "lon": -99.97,
+      "event": false,
+      "obs_hours": 1,
+      "obs_onset": null,
+      "max_wind_ms": 18.527,
+      "min_rh_pct": 14.9634,
+      "models": {
+        "aifs-single": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 47,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 0,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        },
+        "hrrr": {
+          "judged": true,
+          "own_event": false,
+          "own_onset": null,
+          "own_onset_err_h": null,
+          "judged_runs": 16,
+          "hits": 0,
+          "misses": 0,
+          "false_alarms": 6,
+          "first_call_lead_h": null,
+          "held_since_lead_h": null
+        }
+      }
+    }
+  ],
+  "files": {
+    "timeseries": "event_timeseries.parquet",
+    "summary": "event_summary.parquet"
+  },
+  "observations": {
+    "model": "OBS",
+    "id": "gdas-prepbufr",
+    "display": "GDAS"
+  }
+}

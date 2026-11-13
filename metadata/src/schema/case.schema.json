@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NCAR/beacon-dev/src/metadata/schema/case.schema.json",
+  "title": "BEACON use case",
+  "description": "An end-to-end evaluation: which forecasts are compared with which observations, on which fields, thresholds and regions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "title", "short_name", "summary", "forecasts", "reference", "leads", "fields", "regions"],
+  "properties": {
+    "schema_version": {"$ref": "#/$defs/version"},
+    "id": {"description": "Must match the file name without .yaml.", "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+    "title": {"type": "string"},
+    "short_name": {"description": "Label for the use-case menu.", "type": "string", "maxLength": 40},
+    "summary": {"description": "What the case evaluates, in the words of its source.", "type": "string"},
+    "source": {"description": "Where the case comes from, e.g. a document and section.", "type": "string"},
+    "forecasts": {"description": "Dataset IDs of the forecasts compared.", "type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "reference": {"description": "Dataset ID of the observations they are compared with.", "type": "string"},
+    "message_types": {"description": "PREPBUFR message types to use, e.g. ADPSFC for land surface stations.", "type": "array", "items": {"type": "string"}, "minItems": 1},
+    "domain": {"description": "MET polyline (share/met/poly/<name>.poly) limiting which observations are converted.", "type": "string"},
+    "profile": {"description": "beacon-gui Decision Profile preset the GUI opens with when this use case is shown.", "enum": ["general", "severe", "fire-weather", "wind-energy", "aviation", "agriculture", "grid-load", "met-ss-index"]},
+    "leads": {
+      "description": "Lead times in hours; also the spacing of valid times.",
+      "type": "object", "additionalProperties": false, "required": ["start", "end", "step"],
+      "properties": {
+        "start": {"type": "integer", "minimum": 0}, "end": {"type": "integer", "minimum": 0}, "step": {"type": "integer", "minimum": 1},
+        "per_forecast": {"description": "Score each forecast at the leads and run times it has between start and end (e.g. AIFS every 6 h to 240 h, HRRR every hour to 48 h), instead of requiring every forecast to have all of them.", "type": "boolean"}
+      }
+    },
+    "gridded": {
+      "description": "Maps: every forecast and a gridded analysis on one latitude-longitude grid (MET Grid-Stat), for the GUI's Fields page and gridded scores. Uses the runs and valid times every step hours.",
+      "type": "object", "additionalProperties": false, "required": ["reference", "grid"],
+      "properties": {
+        "reference": {"description": "Dataset id of the analysis, e.g. urma-2p5.", "type": "string"},
+        "step": {"description": "Hours between valid times, and between the runs used; divides 24.", "type": "integer", "minimum": 1, "default": 6},
+        "grid": {
+          "description": "The box, in degrees north and east, and the grid spacing in degrees.",
+          "type": "object", "additionalProperties": false, "required": ["lat", "lon", "spacing"],
+          "properties": {
+            "lat": {"type": "array", "items": {"type": "number", "minimum": -90, "maximum": 90}, "minItems": 2, "maxItems": 2},
+            "lon": {"type": "array", "items": {"type": "number", "minimum": -180, "maximum": 180}, "minItems": 2, "maxItems": 2},
+            "spacing": {"type": "number", "exclusiveMinimum": 0}
+          }
+        },
+        "display": {"description": "Name of the box, e.g. Southern Plains map box.", "type": "string"}
+      }
+    },
+    "event": {
+      "description": "A dated weather event, for the event report: when it happened, at which stations, and what counts as dangerous and as a forecast calling it.",
+      "type": "object", "additionalProperties": false, "required": ["window", "region", "stations", "danger", "called"],
+      "properties": {
+        "window": {"description": "The event, used for detection, onset and duration.", "$ref": "#/$defs/span"},
+        "display": {"description": "The time shown on the report's charts; contains the window.", "$ref": "#/$defs/span"},
+        "region": {"description": "Name of the station-list region holding the event stations.", "type": "string"},
+        "stations": {"description": "Display name of each event station, by station ID.", "type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}},
+        "danger": {
+          "description": "Dangerous conditions: all of these at the same station and hour. Each quantity and level must be one of the case's fields.",
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["quantity", "level", "met", "label"],
+            "properties": {
+              "quantity": {"type": "string"},
+              "level": {"$ref": "#/$defs/level"},
+              "met": {"$ref": "#/$defs/threshold"},
+              "label": {"type": "string"}
+            }
+          }
+        },
+        "called": {
+          "description": "When a forecast run has called the event at a station.",
+          "type": "object", "additionalProperties": false, "required": ["min_hours", "onset_tolerance_h"],
+          "properties": {
+            "min_hours": {"description": "Dangerous hours needed, observed or forecast. A forecast with values every N hours counts one dangerous time as N hours. The onset is the first hour of the first spell of min_hours dangerous hours in a row (the first dangerous hour if there is none).", "type": "integer", "minimum": 1},
+            "onset_tolerance_h": {"description": "How far the forecast onset may be from the observed onset.", "type": "integer", "minimum": 1}
+          }
+        }
+      }
+    },
+    "fields": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["quantity", "level"],
+        "properties": {
+          "quantity": {"description": "Key in vocabulary/quantities.yaml.", "type": "string"},
+          "level": {"$ref": "#/$defs/level"},
+          "thresholds": {
+            "description": "Event thresholds for contingency tables, in the quantity's units, with a label in everyday units.",
+            "type": "array",
+            "items": {
+              "type": "object", "additionalProperties": false, "required": ["met", "label"],
+              "properties": {
+                "met": {"$ref": "#/$defs/threshold"},
+                "label": {"type": "string"}
+              }
+            }
+          },
+          "why": {"type": "string"}
+        }
+      }
+    },
+    "regions": {
+      "description": "Where scores are computed: a MET polyline or a list of station IDs.",
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["name", "display"],
+        "properties": {
+          "name": {"description": "Mask name as MET writes it to VX_MASK.", "type": "string", "pattern": "^[A-Za-z0-9_]+$"},
+          "display": {"type": "string"},
+          "poly": {"description": "MET polyline name, share/met/poly/<poly>.poly.", "type": "string"},
+          "stations": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+        },
+        "oneOf": [{"required": ["poly"]}, {"required": ["stations"]}]
+      }
+    },
+    "not_yet": {
+      "description": "Parts of the case this version can't evaluate, and why.",
+      "type": "array",
+      "items": {"type": "object", "additionalProperties": false, "required": ["item", "why"],
+                "properties": {"item": {"type": "string"}, "why": {"type": "string"}}}
+    },
+    "notes": {"type": "string"}
+  },
+  "$defs": {
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "threshold": {"description": "MET threshold, e.g. >=11.2.", "type": "string", "pattern": "^(>=|<=|>|<|==|!=)-?[0-9]+(\\.[0-9]+)?$"},
+    "span": {
+      "type": "object", "additionalProperties": false, "required": ["start", "end"],
+      "properties": {
+        "start": {"description": "UTC, e.g. 2025-03-14T12:00Z.", "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z$"},
+        "end": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}Z$"}
+      }
+    },
+    "level": {"type": "object", "additionalProperties": false, "required": ["type"], "properties": {"type": {"description": "Key in vocabulary/levels.yaml.", "type": "string"}, "value": {"description": "In the level type's units.", "type": "number"}, "values": {"description": "Several values of one level type, e.g. pressure levels.", "type": "array", "items": {"type": "number"}, "minItems": 1, "uniqueItems": true}}, "not": {"required": ["value", "values"]}}
+  }
+}

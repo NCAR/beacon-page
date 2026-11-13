@@ -1,0 +1,92 @@
+schema_version: 0.2.0
+id: aigfs
+title: NCEP AIGFS global AI forecast (GRIB2)
+short_name: AIGFS
+description: >-
+  NCEP's operational AI global forecast model. Output is split into a
+  surface file (sfc) and a pressure-level file (pres) for each lead.
+kind: forecast
+model_type: ai
+producer: NOAA/NWS/NCEP
+format: grib2
+
+spatial:
+  type: grid
+  bbox: [-180, -90, 180, 90]
+  grid: {projection: latlon, nx: 1440, ny: 721, resolution: 0.25 deg}
+
+time:
+  coverage: {start: 2026-04-16T00:00Z, end: null}
+  cycles: [0, 6, 12, 18]
+  leads:
+    - {start: 0, end: 384, step: 6}
+
+locations:
+  - id: nodd-aws
+    provider: nodd
+    access: https
+    retention: permanent
+    coverage: {start: 2026-04-16T00:00Z}
+    files:
+      sfc:
+        template: "https://noaa-nws-graphcastgfs-pds.s3.amazonaws.com/aigfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/model/atmos/grib2/aigfs.t{init?fmt=%H}z.sfc.f{lead?fmt=%3H}.grib2"
+        index: wgrib2
+      pres:
+        template: "https://noaa-nws-graphcastgfs-pds.s3.amazonaws.com/aigfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/model/atmos/grib2/aigfs.t{init?fmt=%H}z.pres.f{lead?fmt=%3H}.grib2"
+        index: wgrib2
+    notes: >-
+      Found by listing the bucket, not from registry documentation. The
+      bucket skips 2026-04-17 to 2026-04-20. Older graphcastgfs.* folders in
+      the same bucket stop at 2026-05-05.
+  - id: nomads
+    provider: nomads
+    access: https
+    retention: P10D
+    files:
+      sfc:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigfs/prod/aigfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/model/atmos/grib2/aigfs.t{init?fmt=%H}z.sfc.f{lead?fmt=%3H}.grib2"
+        index: wgrib2
+      pres:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/aigfs/prod/aigfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/model/atmos/grib2/aigfs.t{init?fmt=%H}z.pres.f{lead?fmt=%3H}.grib2"
+        index: wgrib2
+
+variables:
+  - {quantity: air_temperature, level: {type: height_above_ground, value: 2}, native: {name: TMP}, file: sfc}
+  - {quantity: dew_point_temperature, level: {type: height_above_ground, value: 2}, native: {name: DPT}, file: sfc}
+  - {quantity: eastward_wind, level: {type: height_above_ground, value: 10}, native: {name: UGRD}, file: sfc}
+  - {quantity: northward_wind, level: {type: height_above_ground, value: 10}, native: {name: VGRD}, file: sfc}
+  - {quantity: air_pressure_at_mean_sea_level, level: {type: mean_sea_level}, native: {name: PRMSL}, file: sfc}
+  - {quantity: surface_air_pressure, level: {type: surface}, native: {name: PRES}, file: sfc}
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT6H}
+    native: {name: APCP}
+    file: sfc
+    notes: Not at f000. Files also carry run totals (e.g. 0-1 day acc at f024).
+  - quantity: geopotential_height
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: HGT, units: gpm}
+    file: pres
+  - quantity: air_temperature
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: TMP}
+    file: pres
+  - quantity: eastward_wind
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: UGRD}
+    file: pres
+  - quantity: northward_wind
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: VGRD}
+    file: pres
+  - quantity: specific_humidity
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: SPFH}
+    file: pres
+
+quality:
+  flag: unknown
+
+notes: >-
+  No 2 m specific humidity or 10 m wind speed in the files. 2 m humidity can
+  come from DPT; MET derives WIND from UGRD and VGRD.

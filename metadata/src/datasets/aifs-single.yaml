@@ -1,0 +1,81 @@
+schema_version: 0.2.0
+id: aifs-single
+title: ECMWF AIFS Single global AI forecast (open data, 0.25 degree)
+short_name: AIFS
+description: >-
+  ECMWF's Artificial Intelligence Forecasting System, deterministic version.
+  It starts from ECMWF's physics-based (IFS) analysis. Each lead time is one
+  GRIB2 file with an ECMWF JSON index (.index) next to it.
+kind: forecast
+model_type: ai
+producer: ECMWF
+format: grib2
+
+spatial:
+  type: grid
+  bbox: [-180, -90, 180, 90]
+  grid: {projection: latlon, nx: 1440, ny: 721, resolution: 0.25 deg}
+
+time:
+  coverage: {start: 2025-02-09T12:00Z, end: null}
+  cycles: [0, 6, 12, 18]
+  leads:
+    - {start: 0, end: 360, step: 6}
+
+locations:
+  - id: gcs
+    provider: ecmwf-gcs
+    access: https
+    retention: permanent
+    coverage: {start: 2025-02-28T00:00Z}
+    files:
+      fc:
+        template: "https://storage.googleapis.com/ecmwf-open-data/{init?fmt=%Y%m%d}/{init?fmt=%H}z/aifs-single/0p25/oper/{init?fmt=%Y%m%d%H}0000-{lead?fmt=%1H}h-oper-fc.grib2"
+        index: ecmwf
+    notes: >-
+      ECMWF's open-data mirror on Google Cloud: the same files and .index as
+      the AWS copy, from 2025-02-28 00Z (checked 2026-11-02). First because
+      on 2026-11-02 AWS refused every download with HTTP 503 SlowDown ("reduce
+      your request rate") while this copy answered; AWS stays as the fallback
+      and for earlier dates.
+  - id: aws
+    provider: ecmwf-aws
+    access: https
+    retention: permanent
+    coverage: {start: 2025-02-09T12:00Z}
+    files:
+      fc:
+        template: "https://ecmwf-forecasts.s3.amazonaws.com/{init?fmt=%Y%m%d}/{init?fmt=%H}z/aifs-single/0p25/oper/{init?fmt=%Y%m%d%H}0000-{lead?fmt=%1H}h-oper-fc.grib2"
+        index: ecmwf
+    notes: >-
+      ECMWF's open-data mirror on AWS. The aifs-single folders start at
+      2025-02-09 12Z; an experimental aifs/ folder goes back to at least
+      2024-03.
+  - id: ecmwf
+    provider: ecmwf
+    access: https
+    retention: P3D
+    files:
+      fc:
+        template: "https://data.ecmwf.int/forecasts/{init?fmt=%Y%m%d}/{init?fmt=%H}z/aifs-single/0p25/oper/{init?fmt=%Y%m%d%H}0000-{lead?fmt=%1H}h-oper-fc.grib2"
+        index: ecmwf
+    notes: Keeps about 3 days (checked 2026-10-23).
+
+variables:
+  - {quantity: air_temperature, level: {type: height_above_ground, value: 2}, native: {name: TMP}}
+  - {quantity: dew_point_temperature, level: {type: height_above_ground, value: 2}, native: {name: DPT}}
+  - {quantity: eastward_wind, level: {type: height_above_ground, value: 10}, native: {name: UGRD}}
+  - {quantity: northward_wind, level: {type: height_above_ground, value: 10}, native: {name: VGRD}}
+  - {quantity: surface_air_pressure, level: {type: surface}, native: {name: PRES}}
+
+quality:
+  flag: unknown
+
+notes: >-
+  The files use CCSDS (AEC) packing, which the MET in dtcenter/metplus:6.2
+  can't read; beacon_metadata.fetch re-packs them after download. No wind
+  speed, gust, relative humidity, visibility or ceiling: MET derives wind
+  speed from UGRD and VGRD, and BEACON computes relative humidity from TMP and
+  DPT (vocabulary derive rules). The files also hold 100 m wind, mean sea
+  level pressure, precipitation, radiation, cloud cover and 14 pressure
+  levels; add them here once their MET names have been checked.

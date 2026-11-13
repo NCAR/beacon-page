@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-09T17:36:26Z",
+  "data_mode": "snapshot",
+  "campaign": {
+    "id": "demo-202503",
+    "title": "Wildfire, utilities and insurance: 14 March 2025 Southern Plains outbreak",
+    "as_of": "2025-03-16T23:00:00Z"
+  },
+  "valid_time": {
+    "begin": "2025-03-14T00:00:00Z",
+    "end": "2025-03-16T23:00:00Z"
+  },
+  "models": [
+    {
+      "id": "aifs-single",
+      "display": "AIFS",
+      "kind": "ai"
+    },
+    {
+      "id": "hrrr",
+      "display": "HRRR",
+      "kind": "nwp"
+    }
+  ],
+  "obs_sources": [
+    {
+      "id": "gdas-prepbufr",
+      "display": "GDAS",
+      "type": "points"
+    },
+    {
+      "id": "urma-2p5",
+      "display": "URMA",
+      "type": "analysis"
+    }
+  ],
+  "regions": [
+    {
+      "id": "EVENT",
+      "display": "Event stations (Southern Plains)"
+    },
+    {
+      "id": "FULL",
+      "display": "Southern Plains map box"
+    },
+    {
+      "id": "SPL",
+      "display": "Southern Plains"
+    }
+  ],
+  "pairings": [
+    {
+      "model": "aifs-single",
+      "obs": "gdas-prepbufr",
+      "rows": 160743
+    },
+    {
+      "model": "aifs-single",
+      "obs": "urma-2p5",
+      "rows": 177217
+    },
+    {
+      "model": "hrrr",
+      "obs": "gdas-prepbufr",
+      "rows": 193539
+    },
+    {
+      "model": "hrrr",
+      "obs": "urma-2p5",
+      "rows": 37304
+    }
+  ],
+  "variables": [
+    {
+      "id": "RH",
+      "units": "%",
+      "levels": [
+        "Z2"
+      ],
+      "thresholds": [
+        "<=15"
+      ]
+    },
+    {
+      "id": "TMP",
+      "units": "K",
+      "levels": [
+        "Z2"
+      ],
+      "thresholds": []
+    },
+    {
+      "id": "WIND",
+      "units": "m/s",
+      "levels": [
+        "Z10"
+      ],
+      "thresholds": [
+        ">=11.2",
+        ">=13.4",
+        ">=8.9"
+      ]
+    }
+  ],
+  "leads_hours": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    54,
+    60,
+    66,
+    72,
+    78,
+    84,
+    90,
+    96,
+    102,
+    108,
+    114,
+    120,
+    126,
+    132,
+    138,
+    144,
+    150,
+    156,
+    162,
+    168,
+    174,
+    180,
+    186,
+    192,
+    198,
+    204,
+    210,
+    216,
+    222,
+    228,
+    234,
+    240
+  ],
+  "cycles": [
+    "2025031400",
+    "2025031401",
+    "2025031402",
+    "2025031403",
+    "2025031404",
+    "2025031405",
+    "2025031406",
+    "2025031407",
+    "2025031408",
+    "2025031409",
+    "2025031410",
+    "2025031411",
+    "2025031412",
+    "2025031413",
+    "2025031414",
+    "2025031415",
+    "2025031416",
+    "2025031417",
+    "2025031418",
+    "2025031419",
+    "2025031420",
+    "2025031421",
+    "2025031422",
+    "2025031423",
+    "2025031500",
+    "2025031501",
+    "2025031502",
+    "2025031503",
+    "2025031504",
+    "2025031505",
+    "2025031506",
+    "2025031507",
+    "2025031508",
+    "2025031509",
+    "2025031510",
+    "2025031511",
+    "2025031512",
+    "2025031513",
+    "2025031514",
+    "2025031515",
+    "2025031516",
+    "2025031517",
+    "2025031518",
+    "2025031519",
+    "2025031520",
+    "2025031521",
+    "2025031522",
+    "2025031523",
+    "2025031600",
+    "2025031601",
+    "2025031602",
+    "2025031603",
+    "2025031604",
+    "2025031605",
+    "2025031606",
+    "2025031607",
+    "2025031608",
+    "2025031609",
+    "2025031610",
+    "2025031611",
+    "2025031612",
+    "2025031613",
+    "2025031614",
+    "2025031615",
+    "2025031616",
+    "2025031617",
+    "2025031618",
+    "2025031619",
+    "2025031620",
+    "2025031621",
+    "2025031622",
+    "2025031623"
+  ],
+  "line_types": {
+    "CNT": [
+      "BCMSE",
+      "E10",
+      "E25",
+      "E50",
+      "E75",
+      "E90",
+      "EIQR",
+      "ESTDEV",
+      "FBAR",
+      "FRANK_TIES",
+      "FSTDEV",
+      "MAD",
+      "MAE",
+      "MBIAS",
+      "ME",
+      "ME2",
+      "MSE",
+      "MSESS",
+      "OBAR",
+      "ORANK_TIES",
+      "OSTDEV",
+      "PR_CORR",
+      "RANKS",
+      "RMSE",
+      "SI"
+    ],
+    "CTC": [
+      "EC_VALUE",
+      "FN_ON",
+      "FN_OY",
+      "FY_ON",
+      "FY_OY"
+    ],
+    "CTS": [
+      "ACC",
+      "BAGSS",
+      "BASER",
+      "CSI",
+      "EC_VALUE",
+      "EDI",
+      "EDS",
+      "FAR",
+      "FBIAS",
+      "FMEAN",
+      "GSS",
+      "HK",
+      "HSS",
+      "HSS_EC",
+      "LODDS",
+      "ODDS",
+      "ORSS",
+      "PODN",
+      "PODY",
+      "POFD",
+      "SEDI",
+      "SEDS"
+    ],
+    "SL1L2": [
+      "FBAR",
+      "FFBAR",
+      "FOBAR",
+      "MAE",
+      "OBAR",
+      "OOBAR"
+    ]
+  },
+  "capabilities": {
+    "ensemble": false,
+    "mpr": false,
+    "fields": true,
+    "objects": false
+  },
+  "tiers": {
+    "stats": {
+      "url": "data/stats.parquet",
+      "bytes": 4327462,
+      "rows": 568803
+    }
+  },
+  "provenance": {
+    "lead_corrections": 0,
+    "note": "fcst_lead taken from file_lead where the two disagreed in the source archive (zeroed-lead rows)."
+  },
+  "events": [
+    {
+      "id": "wildfire",
+      "title": "Wildfire / utilities / insurance",
+      "summary": "Compare ECMWF AIFS (AI) with HRRR (full physics) for high winds, low humidity, and the duration of dangerous fire-weather conditions. BEACON retrieves forecasts and observations and evaluates threshold exceedance and warning lead time relevant to utility preparedness and wildfire exposure."
+    },
+    {
+      "id": "wildfire-2025-03",
+      "title": "Wildfire: Mar 2025 Southern Plains",
+      "summary": "Compare ECMWF AIFS (AI) with HRRR (full physics) for high winds, low humidity, and the duration of dangerous fire-weather conditions, in the 14 March 2025 Southern Plains outbreak. SPC rated eastern New Mexico, the Texas Panhandle and Oklahoma Extremely Critical; Oklahoma had its windiest day in Mesonet history, with gusts to 90 mph. BEACON retrieves forecasts and observations and evaluates threshold exceedance and warning lead time relevant to utility preparedness and wildfire exposure.",
+      "report": "data/events/wildfire-2025-03/event.json"
+    },
+    {
+      "id": "airfield",
+      "title": "Air Force airfield operations",
+      "summary": "Compare AIFS (AI) with HRRR (full physics) for surface winds and crosswind thresholds at selected CONUS airfields. BEACON retrieves forecasts and airfield observations and evaluates missed events, false alarms, and the timing of usable operational windows. Ceiling and visibility could be added where suitable model outputs are available."
+    },
+    {
+      "id": "heat",
+      "title": "Extreme heat",
+      "summary": "Compare AIFS (AI) with HRRR (full physics) for temperature, humidity, and heat-event onset and duration. BEACON retrieves forecasts and observations and evaluates hazardous threshold exceedance. Heat index or WBGT could be included where the necessary inputs and reference measurements are available."
+    }
+  ],
+  "event": "wildfire-2025-03",
+  "default_profile": "fire-weather"
+}

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BEACON Portal</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <script src="portal.js" defer></script>
+</head>
+<body>
+  <header class="site">
+    <a class="brand" href="./">BEACON Portal</a>
+  </header>
+  <main>
+    <h1>BEACON</h1>
+    <p class="lead">Independent evaluation of conventional, AI, and hybrid weather forecasts
+      for specific user decisions.</p>
+
+    <div class="layout">
+    <div class="primary">
+    <!-- build_site.py replaces the next line with the use-case menu and panels. -->
+    <section class="use-cases">
+      <p class="picker"><label for="case">Event</label>
+        <select id="case" class="menu" data-panels="case"><option value="wildfire">Wildfire / utilities / insurance</option><option value="wildfire-2025-03" selected>Wildfire: Mar 2025 Southern Plains</option><option value="airfield">Air Force airfield operations</option><option value="heat">Extreme heat</option></select></p>
+      <p class="small">End-to-end runs from the survey response: ECMWF AIFS (AI) against HRRR
+        (full physics), both scored at the same surface stations. A hybrid extension (physics
+        models with ML correction or downscaling) follows when those products are available.</p>
+      
+<section class="dataset case" id="wildfire">
+  <h2>Wildfire, utilities and insurance</h2>
+  <p>Compare ECMWF AIFS (AI) with HRRR (full physics) for high winds, low humidity, and the duration of dangerous fire-weather conditions. BEACON retrieves forecasts and observations and evaluates threshold exceedance and warning lead time relevant to utility preparedness and wildfire exposure.</p>
+  <p class="small">From docs/surveyResponse.md, 1. End-to-end BEACON run.</p>
+  <dl class="facts"><dt>Forecasts</dt><dd><a href="metadata/#aifs-single">AIFS</a> (AI, ECMWF), <a href="metadata/#hrrr">HRRR</a> (NWP, NOAA/NWS/NCEP)</dd><dt>Observations</dt><dd><a href="metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a>, message types ADPSFC</dd><dt>Leads</dt><dd>6–48 h every 6 h; valid times every 6 h from 00Z</dd><dt>Regions</dt><dd>Contiguous US, Western US, Southwest Coast (California), Great Basin</dd></dl>
+  <h3>Compared</h3>
+  <div class="table-wrap"><table><thead><tr><th>Field</th><th>Events</th><th>AIFS</th><th>HRRR</th><th>GDAS</th></tr></thead><tbody><tr><td>wind speed, 10 m above ground</td><td>20 mph, 25 mph, 30 mph</td><td><code>WIND Z10</code><br><span class="small">MET derives it from UGRD, VGRD</span></td><td><code>WIND Z10</code><br><span class="small">MET derives it from UGRD, VGRD</span></td><td><code>WIND Z10</code></td></tr><tr><td>relative humidity, 2 m above ground</td><td>15 %, 25 %</td><td><code>RH Z2</code><br><span class="small">BEACON computes it from TMP, DPT</span></td><td><code>RH Z2</code></td><td><code>RH Z2</code></td></tr><tr><td>air temperature, 2 m above ground</td><td>—</td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr></tbody></table></div>
+  <h3>Not yet</h3><ul class="findings"><li><strong>Duration of dangerous conditions</strong>: Needs hour-by-hour exceedance series; AIFS writes output every 6 hours.</li><li><strong>Red Flag conditions (low humidity and strong wind together)</strong>: Needs a combined event per station and time; MET scores one field at a time.</li><li><strong>Gusts</strong>: HRRR forecasts gusts; AIFS doesn&#x27;t.</li><li><strong>Warning lead time</strong>: For now, compare scores across lead times in the GUI.</li></ul>
+  <p class='small'>Thresholds are typical National Weather Service Red Flag values; utilities and fire agencies use their own. AIFS has no humidity output, so BEACON computes it from AIFS temperature and dewpoint.</p>
+  <h3>METplus configs</h3>
+  <p><a href="cases/wildfire/PB2NC.conf">PB2NC.conf</a> converts the station reports; <a href="cases/wildfire/PointStat.conf">PointStat.conf</a> matches every forecast to the same stations.</p>
+  <h3>Results</h3>
+  
+  <p class="gui-link" data-case="wildfire"><a class="button" href="/beacon-page/gui/?v=events&amp;ev=wildfire" target="beacon-gui">Open this case in the BEACON GUI</a></p>
+  <p class="small">This is a read-only copy of the portal: it can't fetch data or run METplus.</p>
+</section>
+<section class="dataset case" id="wildfire-2025-03">
+  <h2>Wildfire, utilities and insurance: 14 March 2025 Southern Plains outbreak</h2>
+  <p>Compare ECMWF AIFS (AI) with HRRR (full physics) for high winds, low humidity, and the duration of dangerous fire-weather conditions, in the 14 March 2025 Southern Plains outbreak. SPC rated eastern New Mexico, the Texas Panhandle and Oklahoma Extremely Critical; Oklahoma had its windiest day in Mesonet history, with gusts to 90 mph. BEACON retrieves forecasts and observations and evaluates threshold exceedance and warning lead time relevant to utility preparedness and wildfire exposure.</p>
+  <p class="small">From docs/surveyResponse.md, 1. End-to-end BEACON run; event and settings from UTILITIES.md, step 0 (2026-11-02).</p>
+  <dl class="facts"><dt>Forecasts</dt><dd><a href="metadata/#aifs-single">AIFS</a> (AI, ECMWF), <a href="metadata/#hrrr">HRRR</a> (NWP, NOAA/NWS/NCEP)</dd><dt>Observations</dt><dd><a href="metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a>, message types ADPSFC</dd><dt>Leads</dt><dd>AIFS 6–240 h, valid times every 6 h; HRRR 1–48 h, valid times every 1 h (each forecast at the leads and runs it has)</dd><dt>Regions</dt><dd>Event stations (Southern Plains), Southern Plains</dd><dt>Event</dt><dd>2025-03-14 12:00Z to 2025-03-16 12:00Z at 19 stations. Dangerous: wind speed ≥ 20 mph and relative humidity ≤ 15 % at the same station and hour, for at least 2 h; a forecast&#x27;s onset must be within 6 h of the observed one.</dd></dl>
+  <h3>Compared</h3>
+  <div class="table-wrap"><table><thead><tr><th>Field</th><th>Events</th><th>AIFS</th><th>HRRR</th><th>GDAS</th></tr></thead><tbody><tr><td>wind speed, 10 m above ground</td><td>20 mph, 25 mph, 30 mph</td><td><code>WIND Z10</code><br><span class="small">MET derives it from UGRD, VGRD</span></td><td><code>WIND Z10</code><br><span class="small">MET derives it from UGRD, VGRD</span></td><td><code>WIND Z10</code></td></tr><tr><td>relative humidity, 2 m above ground</td><td>15 %</td><td><code>RH Z2</code><br><span class="small">BEACON computes it from TMP, DPT</span></td><td><code>RH Z2</code></td><td><code>RH Z2</code></td></tr><tr><td>air temperature, 2 m above ground</td><td>—</td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr></tbody></table></div>
+  <h3>Not yet</h3><ul class="findings"><li><strong>Gusts</strong>: Utilities decide power shutoffs on gusts; HRRR forecasts them, AIFS doesn&#x27;t.</li><li><strong>Fuel dryness</strong>: Red Flag decisions also weigh fuels; BEACON compares weather only.</li></ul>
+  <p class='small'>Dangerous fire weather is wind of at least 20 mph with RH of 15 % or less at the same station and hour, for at least 2 hours, with the forecast onset within 6 hours of the observed one. The onset is the first hour of the first spell of 2 dangerous hours in a row, not a lone dangerous hour before it. NWS offices and utilities set their own values, and Red Flag criteria use 20 ft winds where BEACON compares 10 m winds. AIFS has values every 6 hours, so it is judged only where the observations at those times show the event starting within 6 hours of the observed onset. AIFS has no humidity output, so BEACON computes it from AIFS temperature and dewpoint.</p>
+  <h3>METplus configs</h3>
+  <p><a href="cases/wildfire-2025-03/PB2NC.conf">PB2NC.conf</a> converts the station reports; <a href="cases/wildfire-2025-03/PointStat.conf">PointStat.conf</a> matches every forecast to the same stations.</p><p><a href="cases/wildfire-2025-03/PointStatEvent.conf">PointStatEvent.conf</a> repeats the matching at the event stations only and keeps every forecast and observed value, for the event report.</p>
+  <h3>Results</h3>
+  
+  <p class="gui-link" data-case="wildfire-2025-03"><a class="button" href="/beacon-page/gui/?v=events&amp;ev=wildfire-2025-03" target="beacon-gui">Open this case in the BEACON GUI</a></p>
+  <p class="small">This is a read-only copy of the portal: it can't fetch data or run METplus.</p>
+</section>
+<section class="dataset case" id="airfield">
+  <h2>Air Force operations</h2>
+  <p>Compare AIFS (AI) with HRRR (full physics) for surface winds and crosswind thresholds at selected CONUS airfields. BEACON retrieves forecasts and airfield observations and evaluates missed events, false alarms, and the timing of usable operational windows. Ceiling and visibility could be added where suitable model outputs are available.</p>
+  <p class="small">From docs/surveyResponse.md, 1. End-to-end BEACON run.</p>
+  <dl class="facts"><dt>Forecasts</dt><dd><a href="metadata/#aifs-single">AIFS</a> (AI, ECMWF), <a href="metadata/#hrrr">HRRR</a> (NWP, NOAA/NWS/NCEP)</dd><dt>Observations</dt><dd><a href="metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a>, message types ADPSFC</dd><dt>Leads</dt><dd>6–48 h every 6 h; valid times every 6 h from 00Z</dd><dt>Regions</dt><dd>Selected USAF airfields, Contiguous US</dd></dl>
+  <h3>Compared</h3>
+  <div class="table-wrap"><table><thead><tr><th>Field</th><th>Events</th><th>AIFS</th><th>HRRR</th><th>GDAS</th></tr></thead><tbody><tr><td>wind speed, 10 m above ground</td><td>15 kt, 25 kt, 35 kt</td><td><code>WIND Z10</code><br><span class="small">MET derives it from UGRD, VGRD</span></td><td><code>WIND Z10</code><br><span class="small">MET derives it from UGRD, VGRD</span></td><td><code>WIND Z10</code></td></tr><tr><td>eastward wind, 10 m above ground</td><td>—</td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward wind, 10 m above ground</td><td>—</td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr></tbody></table></div>
+  <h3>Not yet</h3><ul class="findings"><li><strong>Crosswind</strong>: Needs each airfield&#x27;s runway headings to split wind into crosswind and headwind.</li><li><strong>Ceiling and visibility</strong>: HRRR forecasts them; AIFS doesn&#x27;t.</li><li><strong>Timing of usable operational windows</strong>: Needs hour-by-hour series; AIFS writes output every 6 hours.</li></ul>
+  <p class='small'>The airfields are an example set of USAF bases (Nellis, Edwards, Luke, Davis-Monthan, Hill, Mountain Home, Fairchild, Offutt, Tinker, Dyess, Barksdale, Eglin, Maxwell, Langley, Dover, McGuire); replace them with the partner&#x27;s list. Their METARs come from the GDAS surface (ADPSFC) reports.</p>
+  <h3>METplus configs</h3>
+  <p><a href="cases/airfield/PB2NC.conf">PB2NC.conf</a> converts the station reports; <a href="cases/airfield/PointStat.conf">PointStat.conf</a> matches every forecast to the same stations.</p>
+  <h3>Results</h3>
+  
+  <p class="gui-link" data-case="airfield"><a class="button" href="/beacon-page/gui/?v=events&amp;ev=airfield" target="beacon-gui">Open this case in the BEACON GUI</a></p>
+  <p class="small">This is a read-only copy of the portal: it can't fetch data or run METplus.</p>
+</section>
+<section class="dataset case" id="heat">
+  <h2>Extreme heat</h2>
+  <p>Compare AIFS (AI) with HRRR (full physics) for temperature, humidity, and heat-event onset and duration. BEACON retrieves forecasts and observations and evaluates hazardous threshold exceedance. Heat index or WBGT could be included where the necessary inputs and reference measurements are available.</p>
+  <p class="small">From docs/surveyResponse.md, 1. End-to-end BEACON run.</p>
+  <dl class="facts"><dt>Forecasts</dt><dd><a href="metadata/#aifs-single">AIFS</a> (AI, ECMWF), <a href="metadata/#hrrr">HRRR</a> (NWP, NOAA/NWS/NCEP)</dd><dt>Observations</dt><dd><a href="metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a>, message types ADPSFC</dd><dt>Leads</dt><dd>6–48 h every 6 h; valid times every 6 h from 00Z</dd><dt>Regions</dt><dd>Contiguous US, Southwest Desert, Southern Plains, Southeast Coast</dd></dl>
+  <h3>Compared</h3>
+  <div class="table-wrap"><table><thead><tr><th>Field</th><th>Events</th><th>AIFS</th><th>HRRR</th><th>GDAS</th></tr></thead><tbody><tr><td>air temperature, 2 m above ground</td><td>90 °F, 95 °F, 100 °F</td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew point temperature, 2 m above ground</td><td>—</td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>relative humidity, 2 m above ground</td><td>—</td><td><code>RH Z2</code><br><span class="small">BEACON computes it from TMP, DPT</span></td><td><code>RH Z2</code></td><td><code>RH Z2</code></td></tr></tbody></table></div>
+  <h3>Not yet</h3><ul class="findings"><li><strong>Heat index and WBGT</strong>: Both have to be computed per model and for observations; WBGT also needs radiation, which both models forecast.</li><li><strong>Onset and duration of heat events</strong>: Needs hour-by-hour series; AIFS writes output every 6 hours.</li><li><strong>Overnight minimum temperature</strong>: Needs the minimum over each night, not 6-hourly values.</li></ul>
+  <p class='small'>Valid times are 00, 06, 12 and 18 UTC. 18Z is late morning in the West and early afternoon in the East; 00Z is late afternoon in the West and evening in the East. The daily peak is often between them until hourly comparisons are added.</p>
+  <h3>METplus configs</h3>
+  <p><a href="cases/heat/PB2NC.conf">PB2NC.conf</a> converts the station reports; <a href="cases/heat/PointStat.conf">PointStat.conf</a> matches every forecast to the same stations.</p>
+  <h3>Results</h3>
+  
+  <p class="gui-link" data-case="heat"><a class="button" href="/beacon-page/gui/?v=events&amp;ev=heat" target="beacon-gui">Open this case in the BEACON GUI</a></p>
+  <p class="small">This is a read-only copy of the portal: it can't fetch data or run METplus.</p>
+</section>
+    </section>
+    </div>
+
+    <aside class="more">
+    <h2>Information</h2>
+    <div class="cards">
+      <a class="card" href="metadata/">
+        <h2>Metadata</h2>
+        <p>The forecast, analysis, and observation datasets BEACON knows about: where the
+          files live, what they contain, and known quality issues.</p>
+      </a>
+      <a class="card" href="pairs/">
+        <h2>Datasets</h2>
+        <p>Pairs of forecast and reference datasets that can be compared, what they share, and
+          the METplus config for each.</p>
+      </a>
+      <!-- GUI_URL comes from the container environment (see src/portal/README.md).
+           portal.js makes this do what Show in GUI does for the chosen event. -->
+      <a class="card gui-card" href="/beacon-page/gui/" target="beacon-gui">
+        <h2>BEACON GUI</h2>
+        <p>Model standings, comparisons, decision profiles, and weather-event maps.</p>
+        <p class="small">Runs separately at <code>/beacon-page/gui/</code></p>
+      </a>
+    </div>
+    </aside>
+    </div>
+  </main>
+</body>
+</html>

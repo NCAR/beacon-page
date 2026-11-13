@@ -1,0 +1,115 @@
+schema_version: 0.2.0
+id: gfs-0p25
+title: NCEP GFS 0.25 degree global forecast grids (pgrb2)
+short_name: GFS
+kind: forecast
+model_type: nwp
+producer: NOAA/NWS/NCEP
+identifiers:
+  - {scheme: gdex, value: d084001}
+  - {scheme: doi, value: 10.5065/D65D8PWK}
+format: grib2
+
+spatial:
+  type: grid
+  bbox: [-180, -90, 180, 90]
+  grid: {projection: latlon, nx: 1440, ny: 721, resolution: 0.25 deg}
+
+time:
+  coverage: {start: 2015-01-15T00:00Z, end: null}
+  cycles: [0, 6, 12, 18]
+  # Leads in the operational pgrb2.0p25 files; the GDEX archive keeps fewer.
+  leads:
+    - {start: 0, end: 120, step: 1}
+    - {start: 123, end: 384, step: 3}
+
+epochs:
+  - start: 2019-06-12T12:00Z
+    label: GFS v15 (FV3 dynamical core)
+    evidence: [GDEX d084001 "A PCP" run totals beyond 6 h (0-9 to 0-384 hour acc) first appear 2019-06-12 12:00]
+  - start: 2021-03-22T12:00Z
+    label: GFS v16
+    evidence: [NODD paths gain the atmos/ directory at gfs.20210322/12]
+
+locations:
+  - id: gdex-glade
+    provider: gdex
+    access: posix
+    retention: permanent
+    coverage: {start: 2015-01-15T00:00Z}
+    leads:
+      - {start: 0, end: 240, step: 3}
+      - {start: 246, end: 384, step: 6}
+    files:
+      pgrb2:
+        template: "/glade/campaign/collections/gdex/data/d084001/{init?fmt=%Y}/{init?fmt=%Y%m%d}/gfs.0p25.{init?fmt=%Y%m%d%H}.f{lead?fmt=%3H}.grib2"
+        index: none
+  - id: gdex-https
+    provider: gdex
+    access: https
+    retention: permanent
+    coverage: {start: 2015-01-15T00:00Z}
+    leads:
+      - {start: 0, end: 240, step: 3}
+      - {start: 246, end: 384, step: 6}
+    files:
+      pgrb2:
+        template: "https://data.gdex.ucar.edu/d084001/{init?fmt=%Y}/{init?fmt=%Y%m%d}/gfs.0p25.{init?fmt=%Y%m%d%H}.f{lead?fmt=%3H}.grib2"
+        index: none
+    notes: Mirrors the GLADE layout and supports HTTP range requests.
+  - id: nodd-aws
+    provider: nodd
+    access: https
+    retention: permanent
+    coverage: {start: 2021-03-22T12:00Z}
+    files:
+      pgrb2:
+        template: "https://noaa-gfs-bdp-pds.s3.amazonaws.com/gfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/atmos/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%3H}"
+        index: wgrib2
+    notes: The bucket starts at gfs.20210101, but paths before 2021-03-22 12Z have no atmos/ directory.
+  - id: nomads
+    provider: nomads
+    access: https
+    retention: P10D
+    files:
+      pgrb2:
+        template: "https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/atmos/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%3H}"
+        index: wgrib2
+
+variables:
+  - {quantity: air_temperature, level: {type: height_above_ground, value: 2}, native: {name: TMP}}
+  - {quantity: dew_point_temperature, level: {type: height_above_ground, value: 2}, native: {name: DPT}}
+  - {quantity: specific_humidity, level: {type: height_above_ground, value: 2}, native: {name: SPFH}}
+  - {quantity: relative_humidity, level: {type: height_above_ground, value: 2}, native: {name: RH, units: "%"}}
+  - {quantity: eastward_wind, level: {type: height_above_ground, value: 10}, native: {name: UGRD}}
+  - {quantity: northward_wind, level: {type: height_above_ground, value: 10}, native: {name: VGRD}}
+  - {quantity: air_pressure_at_mean_sea_level, level: {type: mean_sea_level}, native: {name: PRMSL}}
+  - {quantity: surface_air_pressure, level: {type: surface}, native: {name: PRES}}
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT6H}
+    native: {name: APCP}
+    notes: >-
+      Files hold 6 h buckets (e.g. 18-24 hour acc at f024). Run totals (0-1
+      day acc) beyond 6 h exist only from 2019-06-12 12Z.
+  - quantity: geopotential_height
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: HGT, units: gpm}
+  - quantity: air_temperature
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: TMP}
+  - quantity: eastward_wind
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: UGRD}
+  - quantity: northward_wind
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: VGRD}
+  - quantity: specific_humidity
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: SPFH}
+
+quality:
+  flag: unknown
+
+notes: >-
+  10 m wind speed is not in the files; MET derives WIND from UGRD and VGRD.

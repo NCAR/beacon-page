@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- The BEACON site tour (src/tour/README.md). make pages copies this folder to tour/. -->
+<style>
+/* What the Claude artifact viewer added around the page, where the tour was first made. */
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>BEACON Site Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a step card on the left that pops up beside the highlighted part of a
+   screenshot of the live site; chapter ticks across the top. */
+:root {
+  --bg: #edf0f4;
+  --surface: #ffffff;
+  --ink: #13203a;
+  --muted: #586780;
+  --line: #d3dae5;
+  --chip: #e2e8f0;
+  --accent: #b4530f;      /* Red Flag orange: buttons, current step */
+  --accent-ink: #ffffff;
+  --ring: #f39a2e;        /* spotlight ring on the screenshot */
+  --dim: rgba(8, 15, 28, 0.56);
+  --shadow: 0 18px 40px -18px rgba(19, 32, 58, 0.35), 0 2px 6px rgba(19, 32, 58, 0.08);
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-head: "IBM Plex Sans Condensed", "Arial Narrow", "IBM Plex Sans", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c131e; --surface: #162132; --ink: #e6ecf5; --muted: #98a6bb; --line: #27354b;
+    --chip: #1e2b40; --accent: #f08a3c; --accent-ink: #1b0d03; --ring: #f7a64b;
+    --dim: rgba(2, 6, 13, 0.62); --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c131e; --surface: #162132; --ink: #e6ecf5; --muted: #98a6bb; --line: #27354b;
+  --chip: #1e2b40; --accent: #f08a3c; --accent-ink: #1b0d03; --ring: #f7a64b;
+  --dim: rgba(2, 6, 13, 0.62); --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+html, body { min-height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 18px 28px;
+}
+.wrap { max-width: 1500px; margin: 0 auto; display: grid; gap: 16px; }
+
+/* Header */
+.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 24px; }
+.top-text { min-width: 0; }
+.eyebrow {
+  font-family: var(--f-mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); margin: 0;
+}
+h1 {
+  font-family: var(--f-head); font-weight: 600; font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.1; margin: 2px 0 4px; text-wrap: balance; letter-spacing: -0.01em;
+}
+.sub { margin: 0; color: var(--muted); max-width: 70ch; }
+.live {
+  font-weight: 500; color: var(--ink); text-decoration: none; white-space: nowrap;
+  border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 8px;
+}
+.live:hover { border-color: var(--accent); }
+.live:focus-visible, button:focus-visible, .bar a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Chapter ticks */
+.progress { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+.chap { display: grid; gap: 5px; min-width: 0; }
+.chap-name {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.chap.on .chap-name { color: var(--ink); }
+.ticks { display: flex; flex-wrap: wrap; gap: 4px; }
+.tick {
+  width: 26px; height: 8px; border-radius: 4px; border: 0; padding: 0; cursor: pointer;
+  background: var(--chip); position: relative;
+}
+.tick::after { content: ""; position: absolute; inset: -8px -2px; } /* bigger hit area */
+.tick.seen { background: var(--muted); opacity: 0.55; }
+.tick.now { background: var(--accent); opacity: 1; }
+.tick:hover { background: var(--accent); opacity: 0.7; }
+
+/* Stage: card column + screenshot */
+.stage {
+  display: grid; grid-template-columns: minmax(290px, 350px) minmax(0, 1fr);
+  gap: 26px; align-items: stretch;
+}
+.cardcol { position: relative; min-width: 0; }
+.card {
+  position: absolute; left: 0; right: 0; top: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: var(--shadow); padding: 18px 20px 16px;
+  transition: top 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ay: 50%;
+}
+.card::before {
+  content: ""; position: absolute; right: -8px; top: var(--ay); width: 14px; height: 14px;
+  background: var(--surface); border-top: 1px solid var(--line); border-right: 1px solid var(--line);
+  transform: translateY(-50%) rotate(45deg); transition: top 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.card.pop { animation: pop 0.34s cubic-bezier(0.2, 0.9, 0.3, 1.15); }
+@keyframes pop {
+  from { opacity: 0; transform: translateX(-10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.card-chap { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.card-count { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.card h2 {
+  font-family: var(--f-head); font-weight: 600; font-size: 21px; line-height: 1.2;
+  margin: 6px 0 8px; text-wrap: balance;
+}
+.card-body { display: grid; gap: 8px; }
+.card-body p { margin: 0; }
+.card-body strong { font-weight: 600; }
+.card-body code { font-family: var(--f-mono); font-size: 13px; background: var(--chip); border-radius: 4px; padding: 1px 5px; }
+.card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
+a.btn { display: inline-block; text-decoration: none; }
+a.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Last step: Open BEACON takes the right-hand push, Start over sits beside it */
+#openbeacon:not([hidden]) + #next { margin-left: 0; }
+.btn {
+  font: 500 14px/1 var(--f-body); padding: 10px 16px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); margin-left: auto; }
+.btn.primary:hover { filter: brightness(1.08); }
+.hint { font-size: 12px; color: var(--muted); margin: 10px 0 0; }
+.hint kbd {
+  font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 4px; padding: 0 4px; background: var(--bg);
+}
+
+.frame {
+  margin: 0; min-width: 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--line);
+  background: var(--surface); box-shadow: var(--shadow); align-self: start; justify-self: start; max-width: 100%;
+}
+.bar {
+  display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--line);
+  background: var(--chip);
+}
+.url {
+  flex: 1; min-width: 0; font-family: var(--f-mono); font-size: 12.5px; color: var(--muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  background: var(--surface); border-radius: 6px; padding: 4px 10px;
+}
+.url b { color: var(--ink); font-weight: 500; }
+.bar a { font-size: 13px; font-weight: 500; color: var(--accent); text-decoration: none; white-space: nowrap; }
+.bar a:hover { text-decoration: underline; }
+.shot { position: relative; overflow: hidden; background: var(--bg); max-width: 100%; }
+.shot img { display: block; width: 100%; height: 100%; }
+.spot {
+  position: absolute; border-radius: 8px; pointer-events: none;
+  box-shadow: 0 0 0 3px var(--ring), 0 0 0 4000px var(--dim);
+  transition: left 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.spot::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  outline: 2px solid var(--ring); outline-offset: 2px; animation: pulse 2.4s ease-out infinite;
+}
+@keyframes pulse {
+  0% { outline-offset: 2px; opacity: 0.9; }
+  70%, 100% { outline-offset: 14px; opacity: 0; }
+}
+
+.foot { font-size: 12.5px; color: var(--muted); margin: 4px 0 0; max-width: 90ch; }
+.foot a { color: inherit; }
+
+/* Phone and narrow windows: screenshot first, card below it */
+@media (max-width: 880px) {
+  .stage { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .frame { order: 1; }
+  .cardcol { order: 2; }
+  .card { position: static; }
+  .card::before { display: none; }
+  .hint { display: none; }
+  .url .host { display: none; }
+  .btn { padding-inline: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card, .card::before, .spot { transition: none; }
+  .card.pop { animation: none; }
+  .spot::after { animation: none; opacity: 0; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="top-text">
+      <p class="eyebrow">Guided tour · 25 steps</p>
+      <h1>BEACON Site Tour</h1>
+      <p class="sub">The public BEACON portal and GUI, one feature at a time, following the 14 March 2025 Southern Plains fire-weather outbreak.</p>
+    </div>
+    <a class="live" href="../">Open the portal</a>
+  </header>
+
+  <nav class="progress" id="progress" aria-label="Tour steps"></nav>
+
+  <div class="stage" id="stage">
+    <div class="cardcol" id="cardcol">
+      <article class="card" id="card" aria-live="polite">
+        <div class="card-head"><span class="card-chap" id="chap"></span><span class="card-count" id="count"></span></div>
+        <h2 id="title"></h2>
+        <div class="card-body" id="body"></div>
+        <div class="card-actions">
+          <button class="btn" id="back" type="button">Back</button>
+          <a class="btn primary" id="openbeacon" href="../" hidden>Open BEACON</a>
+          <button class="btn primary" id="next" type="button">Next</button>
+        </div>
+        <p class="hint" id="hint">Or use the <kbd>←</kbd> <kbd>→</kbd> keys.</p>
+      </article>
+    </div>
+    <figure class="frame" id="frame">
+      <div class="bar">
+        <span class="url" id="url"></span>
+        <a id="openview" href="../" target="_blank" rel="noopener">Open this view ↗</a>
+      </div>
+      <div class="shot" id="shot">
+        <img id="img" src="shots/portal.jpg" alt="">
+        <div class="spot" id="spot"></div>
+      </div>
+    </figure>
+  </div>
+
+  <p class="foot">Screenshots of <a href="../">this site</a>, taken 11 November 2026 in a 1280-pixel-wide window. The live site may have changed since. Step 9 shows a local run of the container version, not the public site.</p>
+</div>
+
+<script>
+// The site's root. The tour is served at <root>/tour/ (make pages); standalone.py
+// writes the public address here for the single-file copy.
+const BASE = new URL("../", location.href).href;
+const EV = "gui/?v=events&ev=wildfire-2025-03";
+const CHAPTERS = ["Portal", "Event report", "More views"];
+// box: x, y, w, h in percent of the screenshot; h: screenshot height in CSS px (width 1280)
+const STEPS = [
+  { id: "portal", shot: "portal", ch: 0, h: 800, box: [5.63, 9.38, 88.75, 16.5], url: "",
+    title: "Start at the portal",
+    body: ["BEACON evaluates conventional, AI and hybrid weather forecasts for the decisions people make with them. The portal is its front page: the use cases, the data behind them, and the METplus configs.",
+      "This public copy is read-only. It shows real results, but it can't fetch data or run METplus."] },
+  { id: "event-picker", shot: "picker", ch: 0, h: 800, box: [5.63, 29.07, 63.75, 16.68], url: "",
+    title: "Pick an event",
+    body: ["The Event menu holds the March 2025 Southern Plains outbreak case and currently unimplemented cases from the survey response: wildfire for utilities and insurers, Air Force airfield operations, and extreme heat. Next events will focus on the committee's recommendation of compound fire-weather risk and extreme rainfall/urban flooding.",
+      "Each compares ECMWF's AIFS (AI) with NOAA's HRRR (full physics) at the same surface stations. The tour follows the March 2025 outbreak, the menu's default."] },
+  { id: "case-facts", shot: "facts", ch: 0, h: 800, box: [5.63, 16.62, 63.75, 58.49], url: "",
+    title: "What the case compares",
+    body: ["On 14 March 2025, SPC rated eastern New Mexico, the Texas Panhandle and Oklahoma Extremely Critical, and Oklahoma had its windiest day in Mesonet history.",
+      "BEACON scores AIFS out to 240 h and HRRR out to 48 h against GDAS station reports. The Event line sets the rule for danger: <strong>wind ≥ 20 mph and humidity ≤ 15 %</strong> at the same station and hour, for at least 2 hours."] },
+  { id: "fields-compared", shot: "compared", ch: 0, h: 860, box: [5.63, 15.45, 63.75, 45.25], url: "",
+    title: "What's compared, and what isn't yet",
+    body: ["The table gives each field's MET name for every dataset and says which values are derived. MET derives wind speed from the wind components. AIFS has no humidity output, so BEACON computes it from temperature and dew point.",
+      "<strong>Not yet</strong> lists the gaps: utilities decide shutoffs on gusts, which AIFS doesn't forecast, and BEACON compares weather, not fuel dryness."] },
+  { id: "metplus-configs", shot: "configs", ch: 0, h: 800, box: [5.63, 55.96, 63.75, 18.25], url: "",
+    title: "The METplus configs",
+    body: ["These are the configs BEACON generated for this case. PB2NC converts the station reports. PointStat matches every forecast to the same stations. PointStatEvent repeats the matching at the 19 event stations and keeps every value for the event report.",
+      "Open one to see exactly what ran."] },
+  { id: "reference-pages", shot: "info", ch: 0, h: 800, box: [70.63, 26.07, 23.75, 73.93], url: "",
+    title: "Reference pages",
+    body: ["<strong>Metadata</strong> lists every dataset BEACON knows: where its files live, what they contain and known quality issues.",
+      "<strong>Datasets</strong> lists the forecast and reference pairs that can be compared, with a METplus config for each. The <strong>BEACON GUI</strong> card opens the results."] },
+  { id: "metadata", shot: "metadata", ch: 0, h: 800, box: [5.63, 30.57, 88.75, 64.42], url: "metadata/",
+    title: "Metadata",
+    body: ["One row per dataset: AI and physics forecasts (AIFS, AIGFS, CREDIT, GFS, HRRR), station observations (GDAS PREPBUFR) and analyses (Stage IV, URMA).",
+      "Each dataset's entry lists its file locations in order of preference, its variables with their MET names, and quality notes. The records say where the data lives; they don't hold the data."] },
+  { id: "open-gui", shot: "open-gui", ch: 0, h: 800, box: [5.63, 80.46, 63.75, 8.25], url: "",
+    title: "Open the case in the GUI",
+    body: ["This button opens the BEACON GUI on the case's event report.",
+      "The GUI loads the published statistics, then re-derives and checks them in your browser.",
+      "This public copy can't fetch data or run METplus. The next step shows the version that can."] },
+  { id: "container-portal", shot: "portal-with-metplus", img: "shots/portal-with-metplus.png", ch: 0, w: 761, h: 476,
+    box: [1.84, 12.18, 96.06, 30.88], url: "", local: "localhost:8080/",
+    title: "The full portal, in containers",
+    body: ["Run in containers with <code>make run</code>, the portal adds a <strong>Run</strong> box. Pick the dates, then:",
+      "<strong>Fetch data</strong> downloads the fields every model needs, and the station reports.<br><strong>Run METplus</strong> runs PB2NC and Point-Stat on them.<br><strong>Show in GUI</strong> publishes the results to the BEACON GUI and opens it.",
+      "The job table keeps each job's status, result and log. The public site is built from this version's output."] },
+
+  { id: "gui-rail", shot: "rail", ch: 1, h: 800, box: [0.87, 12.4, 20.63, 79.19], url: EV,
+    title: "Find your way around the GUI",
+    body: ["The rail stays on the left as you scroll. <strong>Event Report</strong> is the case's own page. <strong>Vocabulary</strong> switches the wording between Plain, Technical and Impact.",
+      "The <strong>decision profile</strong>, here a draft for fire weather and utilities, sets what counts as better when models are ranked. Below it are four views, each named by the question it answers."] },
+  { id: "event-header", shot: "event-head", ch: 1, h: 800, box: [22, 21.92, 61.25, 52.09], url: EV,
+    title: "The case, restated",
+    body: ["The report opens with the event: the models, the observations (GDAS station reports and the URMA analysis), the regions, the dates and the decision profile.",
+      "The Event menu switches cases, and the buttons jump to Standing, Compare and Evidence."] },
+  { id: "the-question", shot: "question", ch: 1, h: 800, box: [22, 16.58, 77.13, 27.73], url: EV,
+    title: "Did the models see it coming?",
+    body: ["13 of 19 stations had dangerous fire weather between 14 Mar 12Z and 16 Mar 12Z. A forecast run <em>called it</em> when it forecast that many dangerous hours, starting within ±6 h of the observed onset. Only runs issued before the onset count.",
+      "The slider changes that timing tolerance, and the wind units switch between mph and m/s."] },
+  { id: "dangerous-hours", shot: "heatmap", ch: 1, h: 800, box: [22, 13.52, 77.13, 73.05], url: EV,
+    title: "Where and when it turned dangerous",
+    body: ["Each row is a station and each cell an observed hour. Red cells met both conditions; pale blue met only the humidity one and pale pink only the wind one. The black tick is each station's onset.",
+      "The faint lines at 00, 06, 12 and 18Z are the only hours AIFS has values for. Where the red falls between them, AIFS can't be judged.",
+      "Every figure exports as SVG or a 600 dpi PNG."] },
+  { id: "who-called-it", shot: "who-called", ch: 1, h: 900, box: [23.45, 14.68, 74.22, 28.53], url: EV,
+    title: "Who called it, station by station",
+    body: ["AIFS could be judged at 6 of the 13 event stations and called all 6, first 83 to 237 h ahead. HRRR called 12 of 13, 36 to 46 h ahead; its runs reach only 48 h.",
+      "<strong>HRRR at AIFS's times</strong> takes HRRR only at AIFS's 6-hourly times, so that comparison is like for like. The last column counts false alarms at the quiet stations. Pick a station in the table for its own panels."] },
+  { id: "station-timeline", shot: "timeseries", ch: 1, h: 1120, box: [22, 9.12, 77.13, 90.88], url: EV,
+    title: "Fire weather through the event",
+    body: ["Lubbock had 12 dangerous hours from 14 Mar 17Z, with wind peaking at 51 mph and humidity down to 11 %. The charts show each model's wind and humidity against the observations in black, with the dangerous hours shaded.",
+      "Press ▶ or drag the slider to step through the runs from 4 Mar on. The strip below lines up each model's dangerous hours with the observed ones."] },
+  { id: "lead-time", shot: "lead-chart", ch: 1, h: 800, box: [22, 14.71, 77.13, 70.65], url: EV,
+    title: "Which models saw it coming, and when?",
+    body: ["One point per forecast run: how many dangerous hours it forecast, by how long before the onset it was issued, farthest on the left. The black line is what was observed, 12 hours at Lubbock. Hollow points are runs that aren't judged.",
+      "<strong>Show</strong> switches the chart to peak wind or lowest humidity."] },
+  { id: "consistency", shot: "consistency", ch: 1, h: 800, box: [22, 16.56, 77.13, 39.7], url: EV,
+    title: "Who held the signal?",
+    body: ["One cell per run, from 5 March on. A solid green stretch up to the onset is a warning that held.",
+      "Red is a run that forecast danger at the wrong time, which counts as both a miss and a false alarm. Hover a cell to see what that run forecast."] },
+  { id: "scorecard", shot: "scorecard", ch: 1, h: 800, box: [22, 16.59, 77.13, 53.44], url: EV,
+    title: "Scorecard",
+    body: ["Models ranked by warning lead time, then by the share of runs that called it. At Lubbock, AIFS first called it 83 h (3.5 days) ahead, but in only 10 of 40 runs. HRRR called it 41 h ahead, in 7 of 8.",
+      "The other columns give the false-alarm ratio and the errors in onset, duration, peak wind and lowest humidity. Amber marks the ranking as a value judgment: it puts early warning first."] },
+  { id: "two-verdicts", shot: "verdicts", ch: 1, h: 800, box: [22, 24.61, 77.13, 39.12], url: EV,
+    title: "Two verdicts",
+    body: ["The same Lubbock forecasts, ranked two ways. By the usual score, root-mean-square error, HRRR wins on wind: 6.7 mph against 8.7. By warning lead, AIFS wins: 83 hours against 41.",
+      "When the lines cross, the usual score would have picked the other model for this decision. Showing that is what BEACON is for."] },
+
+  { id: "scope", shot: "scope", ch: 2, h: 800, box: [22, 12.4, 77.13, 19.88], url: "gui/",
+    title: "Set the scope",
+    body: ["Standing, Compare and Evidence share this bar. Choose the models, the observations (GDAS stations or the URMA analysis), the variable, the region and the valid times.",
+      "<strong>Reset scope</strong> clears it."] },
+  { id: "standing", shot: "standing", ch: 2, h: 800, box: [22, 32.28, 77.13, 64.27], url: "gui/",
+    title: "Standing",
+    body: ["<em>Which model is doing best, for my needs?</em> Under the fire-weather profile, HRRR comes out on top, though both score 0.50 to two places. Only the 96 forecasts both models have are compared.",
+      "The meter shows that 94 % of what the profile values is verified in this scope, and <strong>What's missing?</strong> lists the rest. Rankings appear only under a named profile, and amber marks value judgments."] },
+  { id: "compare", shot: "compare", ch: 2, h: 900, box: [22, 11.36, 77.13, 88.64], url: "gui/?v=compare&var=WIND",
+    title: "Compare",
+    body: ["<em>Where, and by how much?</em> Pick one variable, here wind speed. The chart shows typical error by forecast lead: HRRR from 1 to 48 h, AIFS out to 240 h.",
+      "Shaded bands are 95 % intervals from resampling blocks of time, so back-to-back forecast cycles don't count as independent evidence. The tabs switch to Head-to-head and a Cross-metric matrix."] },
+  { id: "evidence", shot: "evidence", ch: 2, h: 800, box: [22, 32.28, 77.13, 23.62], url: "gui/?v=evidence",
+    title: "Evidence",
+    body: ["<em>Show me the numbers behind that.</em> The GUI re-derives each statistic from MET's own ingredients and checks it against MET's values, in your browser. Here all 1,873 checked statistics are within tolerance.",
+      "Below are all 568,803 statistics as a table you can download as CSV, then the provenance: MET 12.2.2, the tools used and how statistics are combined."] },
+  { id: "fields-map", shot: "fields", ch: 2, h: 1000, box: [22, 9.92, 77.13, 90.08], url: "gui/?v=fields",
+    title: "Fields",
+    body: ["<em>What does it look like on the map?</em> Each model's map against the URMA analysis, here the dangerous fire-weather area. Pick a valid time, then drag from the longest lead to the shortest to watch the forecast sharpen.",
+      "Swipe, Flicker and Agreement change how the two maps are compared. At 48 h, AIFS's danger area for 15 Mar 00Z overlaps URMA's with a CSI of 0.45."] },
+  { id: "fields-csi", shot: "fields-csi", ch: 2, h: 800, box: [22, 16.57, 77.13, 46.31], url: "gui/?v=fields",
+    title: "How well each model placed the danger",
+    body: ["Every forecast of 15 Mar 00Z, by lead. CSI is the overlap of the forecast and analysis danger areas: 1 is a perfect match. The ringed point is the map above.",
+      "URMA is an analysis, a blend of observations and a short-range model, so this measures agreement with a best estimate, not with what happened. That's the end of the tour."] },
+];
+
+const $ = id => document.getElementById(id);
+const els = {
+  progress: $("progress"), stage: $("stage"), cardcol: $("cardcol"), card: $("card"), chap: $("chap"),
+  count: $("count"), title: $("title"), body: $("body"), back: $("back"), next: $("next"),
+  openBeacon: $("openbeacon"), hint: $("hint"),
+  url: $("url"), open: $("openview"), shot: $("shot"), img: $("img"), spot: $("spot"),
+  frame: $("frame"), bar: document.querySelector(".bar"),
+};
+const narrow = matchMedia("(max-width: 880px)");
+let cur = -1;
+let token = 0;
+
+// Chapter ticks
+const ticks = [];
+CHAPTERS.forEach((name, c) => {
+  const chap = document.createElement("div");
+  chap.className = "chap";
+  chap.innerHTML = `<span class="chap-name">${name}</span><div class="ticks"></div>`;
+  const row = chap.querySelector(".ticks");
+  STEPS.forEach((s, i) => {
+    if (s.ch !== c) return;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "tick";
+    b.title = `${i + 1}. ${s.title}`;
+    b.setAttribute("aria-label", `Step ${i + 1}: ${s.title}`);
+    b.addEventListener("click", () => go(i));
+    row.appendChild(b);
+    ticks[i] = b;
+  });
+  els.progress.appendChild(chap);
+});
+
+// Image cache so a step swaps in only once its screenshot is ready
+const cache = {};
+const src = s => s.img || `shots/${s.shot}.jpg`;
+function load(i) {
+  if (i < 0 || i >= STEPS.length) return Promise.resolve();
+  const s = STEPS[i];
+  if (!cache[s.shot]) {
+    const im = new Image();
+    im.src = src(s);
+    cache[s.shot] = (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => im);
+  }
+  return cache[s.shot];
+}
+
+// Size the screenshot to fit the column and the window, then place the card
+function layout() {
+  if (cur < 0) return;
+  const s = STEPS[cur];
+  const frameW = els.stage.clientWidth - (narrow.matches ? 0 : els.cardcol.offsetWidth + 26) - 2;
+  const barH = els.bar.offsetHeight + 1;
+  const stageTop = els.stage.getBoundingClientRect().top + window.scrollY;
+  const availH = narrow.matches ? Infinity : Math.max(380, window.innerHeight - stageTop - barH - 24);
+  const sw = s.w || 1280;
+  const scale = Math.min(frameW / sw, availH / s.h, 1);
+  const w = Math.floor(sw * scale), h = Math.floor(s.h * scale);
+  els.shot.style.width = w + "px";
+  els.shot.style.height = h + "px";
+  els.frame.style.width = narrow.matches ? "" : (w + 2) + "px";
+  const [bx, by, bw, bh] = s.box;
+  Object.assign(els.spot.style, { left: bx + "%", top: by + "%", width: bw + "%", height: bh + "%" });
+
+  if (narrow.matches) { els.card.style.top = ""; els.cardcol.style.minHeight = ""; return; }
+  const cardH = els.card.offsetHeight;
+  const colH = Math.max(h + barH, cardH);
+  els.cardcol.style.minHeight = colH + "px";
+  const center = barH + ((by + bh / 2) / 100) * h;
+  const top = Math.max(0, Math.min(center - cardH / 2, colH - cardH));
+  els.card.style.top = top + "px";
+  els.card.style.setProperty("--ay", Math.max(22, Math.min(center - top, cardH - 22)) + "px");
+}
+
+function render(i) {
+  const s = STEPS[i];
+  els.chap.textContent = CHAPTERS[s.ch];
+  els.count.textContent = `${i + 1} / ${STEPS.length}`;
+  els.title.textContent = s.title;
+  els.body.innerHTML = s.body.map(p => `<p>${p}</p>`).join("");
+  els.back.disabled = i === 0;
+  const last = i === STEPS.length - 1;
+  els.next.textContent = last ? "Start over" : "Next";
+  els.openBeacon.hidden = !last;
+  els.hint.innerHTML = last ? "Or press <kbd>→</kbd> to open BEACON." : "Or use the <kbd>←</kbd> <kbd>→</kbd> keys.";
+  const full = BASE + s.url;
+  if (s.local) {
+    els.url.innerHTML = `<b>${s.local}</b> · container version, not public`;
+    els.open.hidden = true;
+    els.img.alt = "Screenshot of the portal run in containers, with its Run box highlighted.";
+  } else {
+    els.url.innerHTML = `<span class="host">ncar.github.io</span>/beacon-page/<b>${s.url.replace(/&/g, "&amp;")}</b>`;
+    els.open.hidden = false;
+    els.open.href = full;
+    els.img.alt = `Screenshot of ${full}, with the part this step describes highlighted.`;
+  }
+  ticks.forEach((t, k) => { t.classList.toggle("now", k === i); t.classList.toggle("seen", k < i); t.toggleAttribute("aria-current", k === i); });
+  document.querySelectorAll(".chap").forEach((c, k) => c.classList.toggle("on", k === s.ch));
+  els.card.classList.remove("pop");
+  void els.card.offsetWidth;
+  els.card.classList.add("pop");
+}
+
+function go(i, fromHash) {
+  i = Math.max(0, Math.min(STEPS.length - 1, i));
+  if (i === cur) return;
+  const my = ++token;
+  load(i).then(() => {
+    if (my !== token) return;
+    cur = i;
+    els.img.src = src(STEPS[i]);
+    render(i);
+    layout();
+    if (!fromHash) {
+      try { history.replaceState(null, "", "#" + STEPS[i].id); } catch (e) { /* hash is optional */ }
+    }
+    load(i + 1); load(i - 1); load(i + 2);
+  });
+}
+
+els.openBeacon.href = BASE;
+els.next.addEventListener("click", () => go(cur === STEPS.length - 1 ? 0 : cur + 1));
+els.back.addEventListener("click", () => go(cur - 1));
+document.addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("input, select, textarea")) return;
+  if (e.key === "ArrowRight") {
+    e.preventDefault();
+    // Past the last step, → opens the portal; a held key stops at the last step.
+    if (cur < STEPS.length - 1) go(cur + 1);
+    else if (!e.repeat) location.href = BASE;
+  }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1); }
+  else if (e.key === "Home") { e.preventDefault(); go(0); }
+  else if (e.key === "End") { e.preventDefault(); go(STEPS.length - 1); }
+});
+// Swipe on the screenshot (phones)
+let sx = null;
+els.shot.addEventListener("touchstart", e => { sx = e.touches[0].clientX; }, { passive: true });
+els.shot.addEventListener("touchend", e => {
+  if (sx === null) return;
+  const dx = e.changedTouches[0].clientX - sx;
+  sx = null;
+  if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+function fromHash() {
+  const id = location.hash.slice(1);
+  const i = STEPS.findIndex(s => s.id === id);
+  return i < 0 ? 0 : i;
+}
+window.addEventListener("hashchange", () => go(fromHash(), true));
+window.addEventListener("resize", layout);
+narrow.addEventListener("change", layout);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+if (window.ResizeObserver) new ResizeObserver(layout).observe(els.card);
+
+go(fromHash(), true);
+</script>
+</body>
+</html>

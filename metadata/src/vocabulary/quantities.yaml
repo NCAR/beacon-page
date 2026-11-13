@@ -1,0 +1,173 @@
+# Canonical physical quantities and their names in other systems.
+#
+# Each key is a CF standard name (table v95). A quantity BEACON needs that CF
+# lacks would use a `beacon_` prefix with `cf: null`. Level is not part of the
+# quantity. Dataset records give it separately (see levels.yaml), as CF does
+# with coordinates.
+#
+# Fields:
+#   grib2           WMO discipline/category/number plus the NCEP short name
+#                   that MET writes to FCST_VAR. `units` appears only when
+#                   GRIB's units differ from `units` here.
+#   level           only for quantities whose name implies a level, such as
+#                   sea-level pressure.
+#   vector_component  u or v, for MET's is_u_wind / is_v_wind.
+#   aliases         names in systems that put the level in the name.
+#                   `level` restricts an alias to one level type or value, and
+#                   {value} in `name` is replaced by the level value.
+#                   Systems: esm (ESCOMP ESMStandardNames), ecmwf (parameter
+#                   database shortName, with paramId as `id`), earth2studio
+#                   (E2STUDIO_VOCAB).
+#   derive          ways to compute the quantity from others when a source
+#                   lacks it.
+
+schema_version: 0.1.0
+
+quantities:
+  air_temperature:
+    cf: air_temperature
+    units: K
+    grib2: {discipline: 0, category: 0, number: 0, name: TMP}
+    aliases:
+      - {system: esm, name: air_temperature_at_2m, level: {type: height_above_ground, value: 2}}
+      - {system: esm, name: air_temperature}
+      - {system: ecmwf, name: 2t, id: 167, level: {type: height_above_ground, value: 2}}
+      - {system: ecmwf, name: t, id: 130, level: {type: isobaric}}
+      - {system: earth2studio, name: t2m, level: {type: height_above_ground, value: 2}}
+      - {system: earth2studio, name: "t{value}", level: {type: isobaric}}
+
+  dew_point_temperature:
+    cf: dew_point_temperature
+    units: K
+    grib2: {discipline: 0, category: 0, number: 6, name: DPT}
+    aliases:
+      - {system: ecmwf, name: 2d, id: 168, level: {type: height_above_ground, value: 2}}
+      - {system: earth2studio, name: d2m, level: {type: height_above_ground, value: 2}}
+
+  specific_humidity:
+    cf: specific_humidity
+    units: "1"
+    grib2: {discipline: 0, category: 1, number: 0, name: SPFH, units: kg kg-1}
+    aliases:
+      - {system: esm, name: water_vapor_mixing_ratio_wrt_moist_air_at_2m, level: {type: height_above_ground, value: 2}}
+      - {system: esm, name: water_vapor_mixing_ratio_wrt_moist_air}
+      - {system: ecmwf, name: 2sh, id: 174096, level: {type: height_above_ground, value: 2}}
+      - {system: ecmwf, name: q, id: 133, level: {type: isobaric}}
+      - {system: earth2studio, name: q2m, level: {type: height_above_ground, value: 2}}
+      - {system: earth2studio, name: "q{value}", level: {type: isobaric}}
+
+  relative_humidity:
+    cf: relative_humidity
+    units: "1"
+    grib2: {discipline: 0, category: 1, number: 1, name: RH, units: "%"}
+    aliases:
+      - {system: esm, name: relative_humidity_at_2m, level: {type: height_above_ground, value: 2}}
+      - {system: esm, name: relative_humidity}
+    derive:
+      - from: [air_temperature, dew_point_temperature]
+        expression: 100 * exp(17.625*Td/(243.04 + Td) - 17.625*T/(243.04 + T)), with T and Td in degC
+        note: >-
+          Magnus formula over water (Alduchov and Eskridge 1996). BEACON
+          computes it after download (beacon_metadata.grib) for sources such
+          as AIFS that have temperature and dewpoint but no humidity.
+
+  eastward_wind:
+    cf: eastward_wind
+    units: m s-1
+    grib2: {discipline: 0, category: 2, number: 2, name: UGRD}
+    vector_component: u
+    aliases:
+      - {system: esm, name: eastward_wind_at_10m, level: {type: height_above_ground, value: 10}}
+      - {system: esm, name: eastward_wind}
+      - {system: ecmwf, name: 10u, id: 165, level: {type: height_above_ground, value: 10}}
+      - {system: ecmwf, name: u, id: 131, level: {type: isobaric}}
+      - {system: earth2studio, name: u10m, level: {type: height_above_ground, value: 10}}
+      - {system: earth2studio, name: "u{value}", level: {type: isobaric}}
+
+  northward_wind:
+    cf: northward_wind
+    units: m s-1
+    grib2: {discipline: 0, category: 2, number: 3, name: VGRD}
+    vector_component: v
+    aliases:
+      - {system: esm, name: northward_wind_at_10m, level: {type: height_above_ground, value: 10}}
+      - {system: esm, name: northward_wind}
+      - {system: ecmwf, name: 10v, id: 166, level: {type: height_above_ground, value: 10}}
+      - {system: ecmwf, name: v, id: 132, level: {type: isobaric}}
+      - {system: earth2studio, name: v10m, level: {type: height_above_ground, value: 10}}
+      - {system: earth2studio, name: "v{value}", level: {type: isobaric}}
+
+  wind_speed:
+    cf: wind_speed
+    units: m s-1
+    grib2: {discipline: 0, category: 2, number: 1, name: WIND}
+    aliases:
+      - {system: esm, name: wind_speed_at_10m, level: {type: height_above_ground, value: 10}}
+      - {system: esm, name: wind_speed}
+      - {system: ecmwf, name: 10si, id: 207, level: {type: height_above_ground, value: 10}}
+      - {system: earth2studio, name: ws10m, level: {type: height_above_ground, value: 10}}
+    derive:
+      - from: [eastward_wind, northward_wind]
+        expression: sqrt(eastward_wind**2 + northward_wind**2)
+        note: MET computes WIND from UGRD and VGRD when WIND is requested but absent.
+
+  wind_speed_of_gust:
+    cf: wind_speed_of_gust
+    units: m s-1
+    grib2: {discipline: 0, category: 2, number: 22, name: GUST}
+
+  air_pressure_at_mean_sea_level:
+    cf: air_pressure_at_mean_sea_level
+    units: Pa
+    level: mean_sea_level
+    grib2: {discipline: 0, category: 3, number: 1, name: PRMSL}
+    aliases:
+      - {system: esm, name: air_pressure_at_mean_sea_level}
+      - {system: ecmwf, name: msl, id: 151}
+      - {system: earth2studio, name: msl}
+
+  surface_air_pressure:
+    cf: surface_air_pressure
+    units: Pa
+    level: surface
+    grib2: {discipline: 0, category: 3, number: 0, name: PRES}
+    aliases:
+      - {system: esm, name: air_pressure_at_surface}
+      - {system: ecmwf, name: sp, id: 134}
+      - {system: earth2studio, name: sp}
+
+  geopotential_height:
+    cf: geopotential_height
+    units: m
+    grib2: {discipline: 0, category: 3, number: 5, name: HGT, units: gpm}
+    aliases:
+      - {system: esm, name: geopotential_height}
+      - {system: ecmwf, name: gh, id: 156, level: {type: isobaric}}
+    derive:
+      - from: [geopotential]
+        expression: geopotential / 9.80665
+        note: >-
+          9.80665 m s-2 is standard gravity. beacon-vx currently divides by
+          9.81.
+
+  geopotential:
+    cf: geopotential
+    units: m2 s-2
+    grib2: {discipline: 0, category: 3, number: 4, name: GP}
+    aliases:
+      - {system: ecmwf, name: z, id: 129, level: {type: isobaric}}
+      - {system: earth2studio, name: "z{value}", level: {type: isobaric}}
+
+  precipitation_amount:
+    cf: precipitation_amount
+    units: kg m-2
+    grib2: {discipline: 0, category: 1, number: 8, name: APCP}
+    aliases:
+      - system: ecmwf
+        name: tp
+        id: 228
+        units: m
+        note: >-
+          Liquid-water-equivalent thickness. The accumulation period depends
+          on the product.
+      - {system: earth2studio, name: tp06, units: m, period: PT6H}

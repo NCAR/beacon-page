@@ -1,0 +1,52 @@
+schema_version: 0.2.0
+id: airfield
+title: Air Force operations
+short_name: Air Force airfield operations
+summary: >-
+  Compare AIFS (AI) with HRRR (full physics) for surface winds and crosswind
+  thresholds at selected CONUS airfields. BEACON retrieves forecasts and
+  airfield observations and evaluates missed events, false alarms, and the
+  timing of usable operational windows. Ceiling and visibility could be added
+  where suitable model outputs are available.
+source: docs/surveyResponse.md, 1. End-to-end BEACON run
+forecasts: [aifs-single, hrrr]
+reference: gdas-prepbufr
+message_types: [ADPSFC]
+domain: CONUS
+profile: aviation
+leads: {start: 6, end: 48, step: 6}
+
+fields:
+  - quantity: wind_speed
+    level: {type: height_above_ground, value: 10}
+    thresholds:
+      - {met: ">=7.7", label: "15 kt"}
+      - {met: ">=12.9", label: "25 kt"}
+      - {met: ">=18.0", label: "35 kt"}
+    why: Wind limits for flying and ground operations.
+  - quantity: eastward_wind
+    level: {type: height_above_ground, value: 10}
+    why: With the northward component, scores wind direction (vector statistics).
+  - quantity: northward_wind
+    level: {type: height_above_ground, value: 10}
+    why: With the eastward component, scores wind direction (vector statistics).
+
+regions:
+  - name: AIRFIELDS
+    display: Selected USAF airfields
+    stations: [KLSV, KEDW, KLUF, KDMA, KHIF, KMUO, KSKA, KOFF, KTIK, KDYS, KBAD, KVPS, KMXF, KLFI, KDOV, KWRI]
+  - {name: CONUS, display: Contiguous US, poly: CONUS}
+
+not_yet:
+  - item: Crosswind
+    why: Needs each airfield's runway headings to split wind into crosswind and headwind.
+  - item: Ceiling and visibility
+    why: HRRR forecasts them; AIFS doesn't.
+  - item: Timing of usable operational windows
+    why: Needs hour-by-hour series; AIFS writes output every 6 hours.
+
+notes: >-
+  The airfields are an example set of USAF bases (Nellis, Edwards, Luke,
+  Davis-Monthan, Hill, Mountain Home, Fairchild, Offutt, Tinker, Dyess,
+  Barksdale, Eglin, Maxwell, Langley, Dover, McGuire); replace them with the
+  partner's list. Their METARs come from the GDAS surface (ADPSFC) reports.

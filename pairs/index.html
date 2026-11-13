@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Datasets · BEACON Portal</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../portal.js" defer></script>
+</head>
+<body>
+  <header class="site"><a class="brand" href="../">BEACON Portal</a> <span class="crumb">/ Datasets</span></header>
+  <main>
+    <h1>Datasets</h1>
+    <p class="lead">Forecast and reference datasets that can be compared, worked out from the
+      <a href="../metadata/">input metadata</a>: they overlap in time and share at least one
+      variable at the same level.</p>
+    <p class="picker"><label for="pair">Pair</label>
+      <select id="pair" class="menu" data-panels="pair"><option value="aifs-single__gdas-prepbufr">aifs-single vs gdas-prepbufr (no config yet)</option><option value="aifs-single__urma-2p5">aifs-single vs urma-2p5</option><option value="aigfs__gdas-prepbufr">aigfs vs gdas-prepbufr (no config yet)</option><option value="aigfs__stage-iv">aigfs vs stage-iv</option><option value="aigfs__urma-2p5">aigfs vs urma-2p5</option><option value="credit-nrt__gdas-prepbufr">credit-nrt vs gdas-prepbufr (no config yet)</option><option value="credit-nrt__urma-2p5">credit-nrt vs urma-2p5</option><option value="gfs-0p25__gdas-prepbufr">gfs-0p25 vs gdas-prepbufr (no config yet)</option><option value="gfs-0p25__stage-iv">gfs-0p25 vs stage-iv</option><option value="gfs-0p25__urma-2p5" selected>gfs-0p25 vs urma-2p5</option><option value="hrrr__gdas-prepbufr">hrrr vs gdas-prepbufr (no config yet)</option><option value="hrrr__stage-iv">hrrr vs stage-iv</option><option value="hrrr__urma-2p5">hrrr vs urma-2p5</option></select></p>
+    <p class="small">This read-only copy of the portal shows each pair's config but can't fetch data or run METplus. Page built 2026-11-12 15:48 UTC.</p>
+    
+<section class="dataset pair" id="aifs-single__gdas-prepbufr">
+  <h2>aifs-single vs gdas-prepbufr</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#aifs-single">ECMWF AIFS Single global AI forecast (open data, 0.25 degree)</a></dd><dt>Reference</dt><dd><a href="../metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a></dd><dt>Both cover</dt><dd>2025-02-09T12:00Z to ongoing</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>No config yet: gdas-prepbufr is point data: needs PB2NC + PointStat, not written yet.</p>
+  
+</section>
+<section class="dataset pair" id="aifs-single__urma-2p5">
+  <h2>aifs-single vs urma-2p5</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#aifs-single">ECMWF AIFS Single global AI forecast (open data, 0.25 degree)</a></dd><dt>Reference</dt><dd><a href="../metadata/#urma-2p5">NCEP URMA 2.5 km CONUS surface analysis</a></dd><dt>Both cover</dt><dd>2025-02-09T12:00Z to ongoing</dd><dt>Data</dt><dd>fc_anl: forecast fc downloaded from gcs or aws or ecmwf; reference anl downloaded from nodd-aws or nomads</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr><tr><td>surface_air_pressure</td><td>Ground or water surface</td><td></td><td><code>PRES Z0</code></td><td><code>PRES Z0</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="aifs-single__urma-2p5/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: ECMWF AIFS Single global AI forecast (open data, 0.25 degree)
+#      vs NCEP URMA 2.5 km CONUS surface analysis
+# Generated by beacon_metadata.metplus from datasets/aifs-single.yaml and
+# datasets/urma-2p5.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   fc_anl: forecast downloaded, reference downloaded
+
+[config]
+USE_CASE_DESC = aifs-single__urma-2p5
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(fc_anl)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/aifs-single__urma-2p5
+
+MODEL = aifs-single
+OBTYPE = urma-2p5
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = urma-2p5
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[fc_anl]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/aifs-single/fc/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/anl/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_fc_anl
+FCST_GRID_STAT_VAR1_NAME = TMP
+FCST_GRID_STAT_VAR1_LEVELS = Z2
+OBS_GRID_STAT_VAR1_NAME = TMP
+OBS_GRID_STAT_VAR1_LEVELS = Z2
+FCST_GRID_STAT_VAR2_NAME = DPT
+FCST_GRID_STAT_VAR2_LEVELS = Z2
+OBS_GRID_STAT_VAR2_NAME = DPT
+OBS_GRID_STAT_VAR2_LEVELS = Z2
+FCST_GRID_STAT_VAR3_NAME = UGRD
+FCST_GRID_STAT_VAR3_LEVELS = Z10
+OBS_GRID_STAT_VAR3_NAME = UGRD
+OBS_GRID_STAT_VAR3_LEVELS = Z10
+FCST_GRID_STAT_VAR4_NAME = VGRD
+FCST_GRID_STAT_VAR4_LEVELS = Z10
+OBS_GRID_STAT_VAR4_NAME = VGRD
+OBS_GRID_STAT_VAR4_LEVELS = Z10
+FCST_GRID_STAT_VAR5_NAME = PRES
+FCST_GRID_STAT_VAR5_LEVELS = Z0
+OBS_GRID_STAT_VAR5_NAME = PRES
+OBS_GRID_STAT_VAR5_LEVELS = Z0
+</pre></details>
+  
+</section>
+<section class="dataset pair" id="aigfs__gdas-prepbufr">
+  <h2>aigfs vs gdas-prepbufr</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#aigfs">NCEP AIGFS global AI forecast (GRIB2)</a></dd><dt>Reference</dt><dd><a href="../metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a></dd><dt>Both cover</dt><dd>2026-04-16T00:00Z to ongoing</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr><tr><td>air_pressure_at_mean_sea_level</td><td>Mean sea level</td><td></td><td><code>PRMSL L0</code></td><td><code>PRMSL L0</code></td></tr><tr><td>geopotential_height</td><td>50 hPa</td><td></td><td><code>HGT P50</code></td><td><code>HGT P50</code></td></tr><tr><td>geopotential_height</td><td>100 hPa</td><td></td><td><code>HGT P100</code></td><td><code>HGT P100</code></td></tr><tr><td>geopotential_height</td><td>150 hPa</td><td></td><td><code>HGT P150</code></td><td><code>HGT P150</code></td></tr><tr><td>geopotential_height</td><td>200 hPa</td><td></td><td><code>HGT P200</code></td><td><code>HGT P200</code></td></tr><tr><td>geopotential_height</td><td>250 hPa</td><td></td><td><code>HGT P250</code></td><td><code>HGT P250</code></td></tr><tr><td>geopotential_height</td><td>300 hPa</td><td></td><td><code>HGT P300</code></td><td><code>HGT P300</code></td></tr><tr><td>geopotential_height</td><td>400 hPa</td><td></td><td><code>HGT P400</code></td><td><code>HGT P400</code></td></tr><tr><td>geopotential_height</td><td>500 hPa</td><td></td><td><code>HGT P500</code></td><td><code>HGT P500</code></td></tr><tr><td>geopotential_height</td><td>700 hPa</td><td></td><td><code>HGT P700</code></td><td><code>HGT P700</code></td></tr><tr><td>geopotential_height</td><td>850 hPa</td><td></td><td><code>HGT P850</code></td><td><code>HGT P850</code></td></tr><tr><td>geopotential_height</td><td>925 hPa</td><td></td><td><code>HGT P925</code></td><td><code>HGT P925</code></td></tr><tr><td>geopotential_height</td><td>1000 hPa</td><td></td><td><code>HGT P1000</code></td><td><code>HGT P1000</code></td></tr><tr><td>air_temperature</td><td>50 hPa</td><td></td><td><code>TMP P50</code></td><td><code>TMP P50</code></td></tr><tr><td>air_temperature</td><td>100 hPa</td><td></td><td><code>TMP P100</code></td><td><code>TMP P100</code></td></tr><tr><td>air_temperature</td><td>150 hPa</td><td></td><td><code>TMP P150</code></td><td><code>TMP P150</code></td></tr><tr><td>air_temperature</td><td>200 hPa</td><td></td><td><code>TMP P200</code></td><td><code>TMP P200</code></td></tr><tr><td>air_temperature</td><td>250 hPa</td><td></td><td><code>TMP P250</code></td><td><code>TMP P250</code></td></tr><tr><td>air_temperature</td><td>300 hPa</td><td></td><td><code>TMP P300</code></td><td><code>TMP P300</code></td></tr><tr><td>air_temperature</td><td>400 hPa</td><td></td><td><code>TMP P400</code></td><td><code>TMP P400</code></td></tr><tr><td>air_temperature</td><td>500 hPa</td><td></td><td><code>TMP P500</code></td><td><code>TMP P500</code></td></tr><tr><td>air_temperature</td><td>700 hPa</td><td></td><td><code>TMP P700</code></td><td><code>TMP P700</code></td></tr><tr><td>air_temperature</td><td>850 hPa</td><td></td><td><code>TMP P850</code></td><td><code>TMP P850</code></td></tr><tr><td>air_temperature</td><td>925 hPa</td><td></td><td><code>TMP P925</code></td><td><code>TMP P925</code></td></tr><tr><td>air_temperature</td><td>1000 hPa</td><td></td><td><code>TMP P1000</code></td><td><code>TMP P1000</code></td></tr><tr><td>eastward_wind</td><td>50 hPa</td><td></td><td><code>UGRD P50</code></td><td><code>UGRD P50</code></td></tr><tr><td>eastward_wind</td><td>100 hPa</td><td></td><td><code>UGRD P100</code></td><td><code>UGRD P100</code></td></tr><tr><td>eastward_wind</td><td>150 hPa</td><td></td><td><code>UGRD P150</code></td><td><code>UGRD P150</code></td></tr><tr><td>eastward_wind</td><td>200 hPa</td><td></td><td><code>UGRD P200</code></td><td><code>UGRD P200</code></td></tr><tr><td>eastward_wind</td><td>250 hPa</td><td></td><td><code>UGRD P250</code></td><td><code>UGRD P250</code></td></tr><tr><td>eastward_wind</td><td>300 hPa</td><td></td><td><code>UGRD P300</code></td><td><code>UGRD P300</code></td></tr><tr><td>eastward_wind</td><td>400 hPa</td><td></td><td><code>UGRD P400</code></td><td><code>UGRD P400</code></td></tr><tr><td>eastward_wind</td><td>500 hPa</td><td></td><td><code>UGRD P500</code></td><td><code>UGRD P500</code></td></tr><tr><td>eastward_wind</td><td>700 hPa</td><td></td><td><code>UGRD P700</code></td><td><code>UGRD P700</code></td></tr><tr><td>eastward_wind</td><td>850 hPa</td><td></td><td><code>UGRD P850</code></td><td><code>UGRD P850</code></td></tr><tr><td>eastward_wind</td><td>925 hPa</td><td></td><td><code>UGRD P925</code></td><td><code>UGRD P925</code></td></tr><tr><td>eastward_wind</td><td>1000 hPa</td><td></td><td><code>UGRD P1000</code></td><td><code>UGRD P1000</code></td></tr><tr><td>northward_wind</td><td>50 hPa</td><td></td><td><code>VGRD P50</code></td><td><code>VGRD P50</code></td></tr><tr><td>northward_wind</td><td>100 hPa</td><td></td><td><code>VGRD P100</code></td><td><code>VGRD P100</code></td></tr><tr><td>northward_wind</td><td>150 hPa</td><td></td><td><code>VGRD P150</code></td><td><code>VGRD P150</code></td></tr><tr><td>northward_wind</td><td>200 hPa</td><td></td><td><code>VGRD P200</code></td><td><code>VGRD P200</code></td></tr><tr><td>northward_wind</td><td>250 hPa</td><td></td><td><code>VGRD P250</code></td><td><code>VGRD P250</code></td></tr><tr><td>northward_wind</td><td>300 hPa</td><td></td><td><code>VGRD P300</code></td><td><code>VGRD P300</code></td></tr><tr><td>northward_wind</td><td>400 hPa</td><td></td><td><code>VGRD P400</code></td><td><code>VGRD P400</code></td></tr><tr><td>northward_wind</td><td>500 hPa</td><td></td><td><code>VGRD P500</code></td><td><code>VGRD P500</code></td></tr><tr><td>northward_wind</td><td>700 hPa</td><td></td><td><code>VGRD P700</code></td><td><code>VGRD P700</code></td></tr><tr><td>northward_wind</td><td>850 hPa</td><td></td><td><code>VGRD P850</code></td><td><code>VGRD P850</code></td></tr><tr><td>northward_wind</td><td>925 hPa</td><td></td><td><code>VGRD P925</code></td><td><code>VGRD P925</code></td></tr><tr><td>northward_wind</td><td>1000 hPa</td><td></td><td><code>VGRD P1000</code></td><td><code>VGRD P1000</code></td></tr><tr><td>specific_humidity</td><td>50 hPa</td><td></td><td><code>SPFH P50</code></td><td><code>SPFH P50</code></td></tr><tr><td>specific_humidity</td><td>100 hPa</td><td></td><td><code>SPFH P100</code></td><td><code>SPFH P100</code></td></tr><tr><td>specific_humidity</td><td>150 hPa</td><td></td><td><code>SPFH P150</code></td><td><code>SPFH P150</code></td></tr><tr><td>specific_humidity</td><td>200 hPa</td><td></td><td><code>SPFH P200</code></td><td><code>SPFH P200</code></td></tr><tr><td>specific_humidity</td><td>250 hPa</td><td></td><td><code>SPFH P250</code></td><td><code>SPFH P250</code></td></tr><tr><td>specific_humidity</td><td>300 hPa</td><td></td><td><code>SPFH P300</code></td><td><code>SPFH P300</code></td></tr><tr><td>specific_humidity</td><td>400 hPa</td><td></td><td><code>SPFH P400</code></td><td><code>SPFH P400</code></td></tr><tr><td>specific_humidity</td><td>500 hPa</td><td></td><td><code>SPFH P500</code></td><td><code>SPFH P500</code></td></tr><tr><td>specific_humidity</td><td>700 hPa</td><td></td><td><code>SPFH P700</code></td><td><code>SPFH P700</code></td></tr><tr><td>specific_humidity</td><td>850 hPa</td><td></td><td><code>SPFH P850</code></td><td><code>SPFH P850</code></td></tr><tr><td>specific_humidity</td><td>925 hPa</td><td></td><td><code>SPFH P925</code></td><td><code>SPFH P925</code></td></tr><tr><td>specific_humidity</td><td>1000 hPa</td><td></td><td><code>SPFH P1000</code></td><td><code>SPFH P1000</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>No config yet: gdas-prepbufr is point data: needs PB2NC + PointStat, not written yet.</p>
+  
+</section>
+<section class="dataset pair" id="aigfs__stage-iv">
+  <h2>aigfs vs stage-iv</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#aigfs">NCEP AIGFS global AI forecast (GRIB2)</a></dd><dt>Reference</dt><dd><a href="../metadata/#stage-iv">NCEP Stage IV multi-sensor precipitation analysis (CONUS)</a></dd><dt>Both cover</dt><dd>2026-04-16T00:00Z to ongoing</dd><dt>Data</dt><dd>sfc_st4_06h: forecast sfc downloaded from nodd-aws or nomads; reference st4_06h downloaded from gdex-https or nomads</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>precipitation_amount</td><td>Ground or water surface</td><td>sum over 6 h</td><td><code>APCP A06</code></td><td><code>APCP A06</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="aigfs__stage-iv/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: NCEP AIGFS global AI forecast (GRIB2)
+#      vs NCEP Stage IV multi-sensor precipitation analysis (CONUS)
+# Generated by beacon_metadata.metplus from datasets/aigfs.yaml and
+# datasets/stage-iv.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   sfc_st4_06h: forecast downloaded, reference downloaded
+
+[config]
+USE_CASE_DESC = aigfs__stage-iv
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(sfc_st4_06h)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/aigfs__stage-iv
+
+MODEL = aigfs
+OBTYPE = stage-iv
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = stage-iv
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[sfc_st4_06h]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/aigfs/sfc/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/stage-iv/st4_06h/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_sfc_st4_06h
+GRID_STAT_REGRID_METHOD = BUDGET
+FCST_GRID_STAT_VAR1_NAME = APCP
+FCST_GRID_STAT_VAR1_LEVELS = A06
+FCST_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+OBS_GRID_STAT_VAR1_NAME = APCP
+OBS_GRID_STAT_VAR1_LEVELS = A06
+OBS_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+</pre></details>
+  
+</section>
+<section class="dataset pair" id="aigfs__urma-2p5">
+  <h2>aigfs vs urma-2p5</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#aigfs">NCEP AIGFS global AI forecast (GRIB2)</a></dd><dt>Reference</dt><dd><a href="../metadata/#urma-2p5">NCEP URMA 2.5 km CONUS surface analysis</a></dd><dt>Both cover</dt><dd>2026-04-16T00:00Z to ongoing</dd><dt>Data</dt><dd>sfc_anl: forecast sfc downloaded from nodd-aws or nomads; reference anl downloaded from nodd-aws or nomads</dd><dt>Data</dt><dd>sfc_pcp_06h: forecast sfc downloaded from nodd-aws or nomads; reference pcp_06h downloaded from nodd-aws or nomads</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr><tr><td>surface_air_pressure</td><td>Ground or water surface</td><td></td><td><code>PRES Z0</code></td><td><code>PRES Z0</code></td></tr><tr><td>precipitation_amount</td><td>Ground or water surface</td><td>sum over 6 h</td><td><code>APCP A06</code></td><td><code>APCP A06</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="aigfs__urma-2p5/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: NCEP AIGFS global AI forecast (GRIB2)
+#      vs NCEP URMA 2.5 km CONUS surface analysis
+# Generated by beacon_metadata.metplus from datasets/aigfs.yaml and
+# datasets/urma-2p5.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   sfc_anl: forecast downloaded, reference downloaded
+#   sfc_pcp_06h: forecast downloaded, reference downloaded
+
+[config]
+USE_CASE_DESC = aigfs__urma-2p5
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(sfc_anl), GridStat(sfc_pcp_06h)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/aigfs__urma-2p5
+
+MODEL = aigfs
+OBTYPE = urma-2p5
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = urma-2p5
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[sfc_anl]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/aigfs/sfc/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/anl/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_sfc_anl
+FCST_GRID_STAT_VAR1_NAME = TMP
+FCST_GRID_STAT_VAR1_LEVELS = Z2
+OBS_GRID_STAT_VAR1_NAME = TMP
+OBS_GRID_STAT_VAR1_LEVELS = Z2
+FCST_GRID_STAT_VAR2_NAME = DPT
+FCST_GRID_STAT_VAR2_LEVELS = Z2
+OBS_GRID_STAT_VAR2_NAME = DPT
+OBS_GRID_STAT_VAR2_LEVELS = Z2
+FCST_GRID_STAT_VAR3_NAME = UGRD
+FCST_GRID_STAT_VAR3_LEVELS = Z10
+OBS_GRID_STAT_VAR3_NAME = UGRD
+OBS_GRID_STAT_VAR3_LEVELS = Z10
+FCST_GRID_STAT_VAR4_NAME = VGRD
+FCST_GRID_STAT_VAR4_LEVELS = Z10
+OBS_GRID_STAT_VAR4_NAME = VGRD
+OBS_GRID_STAT_VAR4_LEVELS = Z10
+FCST_GRID_STAT_VAR5_NAME = PRES
+FCST_GRID_STAT_VAR5_LEVELS = Z0
+OBS_GRID_STAT_VAR5_NAME = PRES
+OBS_GRID_STAT_VAR5_LEVELS = Z0
+
+[sfc_pcp_06h]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/aigfs/sfc/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/pcp_06h/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_sfc_pcp_06h
+GRID_STAT_REGRID_METHOD = BUDGET
+FCST_GRID_STAT_VAR1_NAME = APCP
+FCST_GRID_STAT_VAR1_LEVELS = A06
+FCST_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+OBS_GRID_STAT_VAR1_NAME = APCP
+OBS_GRID_STAT_VAR1_LEVELS = A06
+OBS_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+</pre></details>
+  
+</section>
+<section class="dataset pair" id="credit-nrt__gdas-prepbufr">
+  <h2>credit-nrt vs gdas-prepbufr</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#credit-nrt">NCAR CREDIT near-real-time demo forecasts (6-hourly)</a></dd><dt>Reference</dt><dd><a href="../metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a></dd><dt>Both cover</dt><dd>2026-04-07T12:00Z to ongoing</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>t2m (0,*,*)</code></td><td><code>TMP Z2</code></td></tr><tr><td>eastward_wind</td><td>model level 137 (used as 10 m above ground)</td><td></td><td><code>U (0,15,*,*)</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>model level 137 (used as 10 m above ground)</td><td></td><td><code>V (0,15,*,*)</code></td><td><code>VGRD Z10</code></td></tr><tr><td>specific_humidity</td><td>model level 137 (used as 2 m above ground)</td><td></td><td><code>Q (0,15,*,*)</code></td><td><code>SPFH Z2</code></td></tr><tr><td>air_pressure_at_mean_sea_level</td><td>Mean sea level</td><td></td><td><code>mean_sea_level_pressure (0,*,*)</code></td><td><code>PRMSL L0</code></td></tr><tr><td>air_temperature</td><td>500 hPa</td><td></td><td><code>T500 (0,*,*)</code></td><td><code>TMP P500</code></td></tr><tr><td>eastward_wind</td><td>500 hPa</td><td></td><td><code>U500 (0,*,*)</code></td><td><code>UGRD P500</code></td></tr><tr><td>northward_wind</td><td>500 hPa</td><td></td><td><code>V500 (0,*,*)</code></td><td><code>VGRD P500</code></td></tr><tr><td>specific_humidity</td><td>500 hPa</td><td></td><td><code>Q500 (0,*,*)</code></td><td><code>SPFH P500</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>No config yet: gdas-prepbufr is point data: needs PB2NC + PointStat, not written yet.</p>
+  
+</section>
+<section class="dataset pair" id="credit-nrt__urma-2p5">
+  <h2>credit-nrt vs urma-2p5</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#credit-nrt">NCAR CREDIT near-real-time demo forecasts (6-hourly)</a></dd><dt>Reference</dt><dd><a href="../metadata/#urma-2p5">NCEP URMA 2.5 km CONUS surface analysis</a></dd><dt>Both cover</dt><dd>2026-04-07T12:00Z to ongoing</dd><dt>Data</dt><dd>pred_anl: forecast pred read in place from ncar-scratch; reference anl downloaded from nodd-aws or nomads</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd><dt>Runs on</dt><dd>NCAR systems only: some files are only on GLADE</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>t2m (0,*,*)</code></td><td><code>TMP Z2</code></td></tr><tr><td>eastward_wind</td><td>model level 137 (used as 10 m above ground)</td><td></td><td><code>U (0,15,*,*)</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>model level 137 (used as 10 m above ground)</td><td></td><td><code>V (0,15,*,*)</code></td><td><code>VGRD Z10</code></td></tr><tr><td>specific_humidity</td><td>model level 137 (used as 2 m above ground)</td><td></td><td><code>Q (0,15,*,*)</code></td><td><code>SPFH Z2</code></td></tr><tr><td>surface_air_pressure</td><td>Ground or water surface</td><td></td><td><code>SP (0,*,*)</code></td><td><code>PRES Z0</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="credit-nrt__urma-2p5/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: NCAR CREDIT near-real-time demo forecasts (6-hourly)
+#      vs NCEP URMA 2.5 km CONUS surface analysis
+# Generated by beacon_metadata.metplus from datasets/credit-nrt.yaml and
+# datasets/urma-2p5.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   pred_anl: forecast read in place from ncar-scratch, reference downloaded
+# Reads GLADE paths, so run it on NCAR systems.
+
+[config]
+USE_CASE_DESC = credit-nrt__urma-2p5
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(pred_anl)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/credit-nrt__urma-2p5
+
+MODEL = credit-nrt
+OBTYPE = urma-2p5
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = urma-2p5
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[pred_anl]
+FCST_GRID_STAT_INPUT_TEMPLATE = /glade/derecho/scratch/jimenez/creditout/demo_nrt/6h/{init?fmt=%Y%m%d%H}/{init?fmt=%Y-%m-%dT%H}Z/pred_{init?fmt=%Y-%m-%dT%H}Z_{lead?fmt=%3H}.nc
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/anl/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_pred_anl
+FCST_GRID_STAT_VAR1_NAME = t2m
+FCST_GRID_STAT_VAR1_LEVELS = (0,*,*)
+OBS_GRID_STAT_VAR1_NAME = TMP
+OBS_GRID_STAT_VAR1_LEVELS = Z2
+FCST_GRID_STAT_VAR2_NAME = U
+FCST_GRID_STAT_VAR2_LEVELS = (0,15,*,*)
+OBS_GRID_STAT_VAR2_NAME = UGRD
+OBS_GRID_STAT_VAR2_LEVELS = Z10
+FCST_GRID_STAT_VAR3_NAME = V
+FCST_GRID_STAT_VAR3_LEVELS = (0,15,*,*)
+OBS_GRID_STAT_VAR3_NAME = VGRD
+OBS_GRID_STAT_VAR3_LEVELS = Z10
+FCST_GRID_STAT_VAR4_NAME = Q
+FCST_GRID_STAT_VAR4_LEVELS = (0,15,*,*)
+OBS_GRID_STAT_VAR4_NAME = SPFH
+OBS_GRID_STAT_VAR4_LEVELS = Z2
+FCST_GRID_STAT_VAR5_NAME = SP
+FCST_GRID_STAT_VAR5_LEVELS = (0,*,*)
+OBS_GRID_STAT_VAR5_NAME = PRES
+OBS_GRID_STAT_VAR5_LEVELS = Z0
+</pre></details>
+  
+</section>
+<section class="dataset pair" id="gfs-0p25__gdas-prepbufr">
+  <h2>gfs-0p25 vs gdas-prepbufr</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#gfs-0p25">NCEP GFS 0.25 degree global forecast grids (pgrb2)</a></dd><dt>Reference</dt><dd><a href="../metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a></dd><dt>Both cover</dt><dd>2015-01-15T00:00Z to ongoing</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>specific_humidity</td><td>2 m above ground</td><td></td><td><code>SPFH Z2</code></td><td><code>SPFH Z2</code></td></tr><tr><td>relative_humidity</td><td>2 m above ground</td><td></td><td><code>RH Z2</code></td><td><code>RH Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr><tr><td>air_pressure_at_mean_sea_level</td><td>Mean sea level</td><td></td><td><code>PRMSL L0</code></td><td><code>PRMSL L0</code></td></tr><tr><td>geopotential_height</td><td>50 hPa</td><td></td><td><code>HGT P50</code></td><td><code>HGT P50</code></td></tr><tr><td>geopotential_height</td><td>100 hPa</td><td></td><td><code>HGT P100</code></td><td><code>HGT P100</code></td></tr><tr><td>geopotential_height</td><td>150 hPa</td><td></td><td><code>HGT P150</code></td><td><code>HGT P150</code></td></tr><tr><td>geopotential_height</td><td>200 hPa</td><td></td><td><code>HGT P200</code></td><td><code>HGT P200</code></td></tr><tr><td>geopotential_height</td><td>250 hPa</td><td></td><td><code>HGT P250</code></td><td><code>HGT P250</code></td></tr><tr><td>geopotential_height</td><td>300 hPa</td><td></td><td><code>HGT P300</code></td><td><code>HGT P300</code></td></tr><tr><td>geopotential_height</td><td>400 hPa</td><td></td><td><code>HGT P400</code></td><td><code>HGT P400</code></td></tr><tr><td>geopotential_height</td><td>500 hPa</td><td></td><td><code>HGT P500</code></td><td><code>HGT P500</code></td></tr><tr><td>geopotential_height</td><td>700 hPa</td><td></td><td><code>HGT P700</code></td><td><code>HGT P700</code></td></tr><tr><td>geopotential_height</td><td>850 hPa</td><td></td><td><code>HGT P850</code></td><td><code>HGT P850</code></td></tr><tr><td>geopotential_height</td><td>925 hPa</td><td></td><td><code>HGT P925</code></td><td><code>HGT P925</code></td></tr><tr><td>geopotential_height</td><td>1000 hPa</td><td></td><td><code>HGT P1000</code></td><td><code>HGT P1000</code></td></tr><tr><td>air_temperature</td><td>50 hPa</td><td></td><td><code>TMP P50</code></td><td><code>TMP P50</code></td></tr><tr><td>air_temperature</td><td>100 hPa</td><td></td><td><code>TMP P100</code></td><td><code>TMP P100</code></td></tr><tr><td>air_temperature</td><td>150 hPa</td><td></td><td><code>TMP P150</code></td><td><code>TMP P150</code></td></tr><tr><td>air_temperature</td><td>200 hPa</td><td></td><td><code>TMP P200</code></td><td><code>TMP P200</code></td></tr><tr><td>air_temperature</td><td>250 hPa</td><td></td><td><code>TMP P250</code></td><td><code>TMP P250</code></td></tr><tr><td>air_temperature</td><td>300 hPa</td><td></td><td><code>TMP P300</code></td><td><code>TMP P300</code></td></tr><tr><td>air_temperature</td><td>400 hPa</td><td></td><td><code>TMP P400</code></td><td><code>TMP P400</code></td></tr><tr><td>air_temperature</td><td>500 hPa</td><td></td><td><code>TMP P500</code></td><td><code>TMP P500</code></td></tr><tr><td>air_temperature</td><td>700 hPa</td><td></td><td><code>TMP P700</code></td><td><code>TMP P700</code></td></tr><tr><td>air_temperature</td><td>850 hPa</td><td></td><td><code>TMP P850</code></td><td><code>TMP P850</code></td></tr><tr><td>air_temperature</td><td>925 hPa</td><td></td><td><code>TMP P925</code></td><td><code>TMP P925</code></td></tr><tr><td>air_temperature</td><td>1000 hPa</td><td></td><td><code>TMP P1000</code></td><td><code>TMP P1000</code></td></tr><tr><td>eastward_wind</td><td>50 hPa</td><td></td><td><code>UGRD P50</code></td><td><code>UGRD P50</code></td></tr><tr><td>eastward_wind</td><td>100 hPa</td><td></td><td><code>UGRD P100</code></td><td><code>UGRD P100</code></td></tr><tr><td>eastward_wind</td><td>150 hPa</td><td></td><td><code>UGRD P150</code></td><td><code>UGRD P150</code></td></tr><tr><td>eastward_wind</td><td>200 hPa</td><td></td><td><code>UGRD P200</code></td><td><code>UGRD P200</code></td></tr><tr><td>eastward_wind</td><td>250 hPa</td><td></td><td><code>UGRD P250</code></td><td><code>UGRD P250</code></td></tr><tr><td>eastward_wind</td><td>300 hPa</td><td></td><td><code>UGRD P300</code></td><td><code>UGRD P300</code></td></tr><tr><td>eastward_wind</td><td>400 hPa</td><td></td><td><code>UGRD P400</code></td><td><code>UGRD P400</code></td></tr><tr><td>eastward_wind</td><td>500 hPa</td><td></td><td><code>UGRD P500</code></td><td><code>UGRD P500</code></td></tr><tr><td>eastward_wind</td><td>700 hPa</td><td></td><td><code>UGRD P700</code></td><td><code>UGRD P700</code></td></tr><tr><td>eastward_wind</td><td>850 hPa</td><td></td><td><code>UGRD P850</code></td><td><code>UGRD P850</code></td></tr><tr><td>eastward_wind</td><td>925 hPa</td><td></td><td><code>UGRD P925</code></td><td><code>UGRD P925</code></td></tr><tr><td>eastward_wind</td><td>1000 hPa</td><td></td><td><code>UGRD P1000</code></td><td><code>UGRD P1000</code></td></tr><tr><td>northward_wind</td><td>50 hPa</td><td></td><td><code>VGRD P50</code></td><td><code>VGRD P50</code></td></tr><tr><td>northward_wind</td><td>100 hPa</td><td></td><td><code>VGRD P100</code></td><td><code>VGRD P100</code></td></tr><tr><td>northward_wind</td><td>150 hPa</td><td></td><td><code>VGRD P150</code></td><td><code>VGRD P150</code></td></tr><tr><td>northward_wind</td><td>200 hPa</td><td></td><td><code>VGRD P200</code></td><td><code>VGRD P200</code></td></tr><tr><td>northward_wind</td><td>250 hPa</td><td></td><td><code>VGRD P250</code></td><td><code>VGRD P250</code></td></tr><tr><td>northward_wind</td><td>300 hPa</td><td></td><td><code>VGRD P300</code></td><td><code>VGRD P300</code></td></tr><tr><td>northward_wind</td><td>400 hPa</td><td></td><td><code>VGRD P400</code></td><td><code>VGRD P400</code></td></tr><tr><td>northward_wind</td><td>500 hPa</td><td></td><td><code>VGRD P500</code></td><td><code>VGRD P500</code></td></tr><tr><td>northward_wind</td><td>700 hPa</td><td></td><td><code>VGRD P700</code></td><td><code>VGRD P700</code></td></tr><tr><td>northward_wind</td><td>850 hPa</td><td></td><td><code>VGRD P850</code></td><td><code>VGRD P850</code></td></tr><tr><td>northward_wind</td><td>925 hPa</td><td></td><td><code>VGRD P925</code></td><td><code>VGRD P925</code></td></tr><tr><td>northward_wind</td><td>1000 hPa</td><td></td><td><code>VGRD P1000</code></td><td><code>VGRD P1000</code></td></tr><tr><td>specific_humidity</td><td>50 hPa</td><td></td><td><code>SPFH P50</code></td><td><code>SPFH P50</code></td></tr><tr><td>specific_humidity</td><td>100 hPa</td><td></td><td><code>SPFH P100</code></td><td><code>SPFH P100</code></td></tr><tr><td>specific_humidity</td><td>150 hPa</td><td></td><td><code>SPFH P150</code></td><td><code>SPFH P150</code></td></tr><tr><td>specific_humidity</td><td>200 hPa</td><td></td><td><code>SPFH P200</code></td><td><code>SPFH P200</code></td></tr><tr><td>specific_humidity</td><td>250 hPa</td><td></td><td><code>SPFH P250</code></td><td><code>SPFH P250</code></td></tr><tr><td>specific_humidity</td><td>300 hPa</td><td></td><td><code>SPFH P300</code></td><td><code>SPFH P300</code></td></tr><tr><td>specific_humidity</td><td>400 hPa</td><td></td><td><code>SPFH P400</code></td><td><code>SPFH P400</code></td></tr><tr><td>specific_humidity</td><td>500 hPa</td><td></td><td><code>SPFH P500</code></td><td><code>SPFH P500</code></td></tr><tr><td>specific_humidity</td><td>700 hPa</td><td></td><td><code>SPFH P700</code></td><td><code>SPFH P700</code></td></tr><tr><td>specific_humidity</td><td>850 hPa</td><td></td><td><code>SPFH P850</code></td><td><code>SPFH P850</code></td></tr><tr><td>specific_humidity</td><td>925 hPa</td><td></td><td><code>SPFH P925</code></td><td><code>SPFH P925</code></td></tr><tr><td>specific_humidity</td><td>1000 hPa</td><td></td><td><code>SPFH P1000</code></td><td><code>SPFH P1000</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>No config yet: gdas-prepbufr is point data: needs PB2NC + PointStat, not written yet.</p>
+  
+</section>
+<section class="dataset pair" id="gfs-0p25__stage-iv">
+  <h2>gfs-0p25 vs stage-iv</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#gfs-0p25">NCEP GFS 0.25 degree global forecast grids (pgrb2)</a></dd><dt>Reference</dt><dd><a href="../metadata/#stage-iv">NCEP Stage IV multi-sensor precipitation analysis (CONUS)</a></dd><dt>Both cover</dt><dd>2015-01-15T00:00Z to ongoing</dd><dt>Data</dt><dd>pgrb2_st4_06h: forecast pgrb2 downloaded from gdex-https or nodd-aws or nomads; reference st4_06h downloaded from gdex-https or nomads</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>precipitation_amount</td><td>Ground or water surface</td><td>sum over 6 h</td><td><code>APCP A06</code></td><td><code>APCP A06</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="gfs-0p25__stage-iv/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: NCEP GFS 0.25 degree global forecast grids (pgrb2)
+#      vs NCEP Stage IV multi-sensor precipitation analysis (CONUS)
+# Generated by beacon_metadata.metplus from datasets/gfs-0p25.yaml and
+# datasets/stage-iv.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   pgrb2_st4_06h: forecast downloaded, reference downloaded
+
+[config]
+USE_CASE_DESC = gfs-0p25__stage-iv
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(pgrb2_st4_06h)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/gfs-0p25__stage-iv
+
+MODEL = gfs-0p25
+OBTYPE = stage-iv
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = stage-iv
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[pgrb2_st4_06h]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/gfs-0p25/pgrb2/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/stage-iv/st4_06h/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_pgrb2_st4_06h
+GRID_STAT_REGRID_METHOD = BUDGET
+FCST_GRID_STAT_VAR1_NAME = APCP
+FCST_GRID_STAT_VAR1_LEVELS = A06
+FCST_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+OBS_GRID_STAT_VAR1_NAME = APCP
+OBS_GRID_STAT_VAR1_LEVELS = A06
+OBS_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+</pre></details>
+  
+</section>
+<section class="dataset pair" id="gfs-0p25__urma-2p5">
+  <h2>gfs-0p25 vs urma-2p5</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#gfs-0p25">NCEP GFS 0.25 degree global forecast grids (pgrb2)</a></dd><dt>Reference</dt><dd><a href="../metadata/#urma-2p5">NCEP URMA 2.5 km CONUS surface analysis</a></dd><dt>Both cover</dt><dd>2015-01-15T00:00Z to ongoing</dd><dt>Data</dt><dd>pgrb2_anl: forecast pgrb2 downloaded from gdex-https or nodd-aws or nomads; reference anl downloaded from nodd-aws or nomads</dd><dt>Data</dt><dd>pgrb2_pcp_06h: forecast pgrb2 downloaded from gdex-https or nodd-aws or nomads; reference pcp_06h downloaded from nodd-aws or nomads</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>specific_humidity</td><td>2 m above ground</td><td></td><td><code>SPFH Z2</code></td><td><code>SPFH Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr><tr><td>surface_air_pressure</td><td>Ground or water surface</td><td></td><td><code>PRES Z0</code></td><td><code>PRES Z0</code></td></tr><tr><td>precipitation_amount</td><td>Ground or water surface</td><td>sum over 6 h</td><td><code>APCP A06</code></td><td><code>APCP A06</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="gfs-0p25__urma-2p5/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: NCEP GFS 0.25 degree global forecast grids (pgrb2)
+#      vs NCEP URMA 2.5 km CONUS surface analysis
+# Generated by beacon_metadata.metplus from datasets/gfs-0p25.yaml and
+# datasets/urma-2p5.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   pgrb2_anl: forecast downloaded, reference downloaded
+#   pgrb2_pcp_06h: forecast downloaded, reference downloaded
+
+[config]
+USE_CASE_DESC = gfs-0p25__urma-2p5
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(pgrb2_anl), GridStat(pgrb2_pcp_06h)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/gfs-0p25__urma-2p5
+
+MODEL = gfs-0p25
+OBTYPE = urma-2p5
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = urma-2p5
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[pgrb2_anl]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/gfs-0p25/pgrb2/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/anl/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_pgrb2_anl
+FCST_GRID_STAT_VAR1_NAME = TMP
+FCST_GRID_STAT_VAR1_LEVELS = Z2
+OBS_GRID_STAT_VAR1_NAME = TMP
+OBS_GRID_STAT_VAR1_LEVELS = Z2
+FCST_GRID_STAT_VAR2_NAME = DPT
+FCST_GRID_STAT_VAR2_LEVELS = Z2
+OBS_GRID_STAT_VAR2_NAME = DPT
+OBS_GRID_STAT_VAR2_LEVELS = Z2
+FCST_GRID_STAT_VAR3_NAME = SPFH
+FCST_GRID_STAT_VAR3_LEVELS = Z2
+OBS_GRID_STAT_VAR3_NAME = SPFH
+OBS_GRID_STAT_VAR3_LEVELS = Z2
+FCST_GRID_STAT_VAR4_NAME = UGRD
+FCST_GRID_STAT_VAR4_LEVELS = Z10
+OBS_GRID_STAT_VAR4_NAME = UGRD
+OBS_GRID_STAT_VAR4_LEVELS = Z10
+FCST_GRID_STAT_VAR5_NAME = VGRD
+FCST_GRID_STAT_VAR5_LEVELS = Z10
+OBS_GRID_STAT_VAR5_NAME = VGRD
+OBS_GRID_STAT_VAR5_LEVELS = Z10
+FCST_GRID_STAT_VAR6_NAME = PRES
+FCST_GRID_STAT_VAR6_LEVELS = Z0
+OBS_GRID_STAT_VAR6_NAME = PRES
+OBS_GRID_STAT_VAR6_LEVELS = Z0
+
+[pgrb2_pcp_06h]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/gfs-0p25/pgrb2/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/pcp_06h/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_pgrb2_pcp_06h
+GRID_STAT_REGRID_METHOD = BUDGET
+FCST_GRID_STAT_VAR1_NAME = APCP
+FCST_GRID_STAT_VAR1_LEVELS = A06
+FCST_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+OBS_GRID_STAT_VAR1_NAME = APCP
+OBS_GRID_STAT_VAR1_LEVELS = A06
+OBS_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+</pre></details>
+  
+</section>
+<section class="dataset pair" id="hrrr__gdas-prepbufr">
+  <h2>hrrr vs gdas-prepbufr</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#hrrr">NOAA HRRR 3 km CONUS forecasts (wrfsfc surface files)</a></dd><dt>Reference</dt><dd><a href="../metadata/#gdas-prepbufr">NCEP GDAS PREPBUFR global surface and upper-air observations</a></dd><dt>Both cover</dt><dd>2014-07-30T18:00Z to ongoing</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>relative_humidity</td><td>2 m above ground</td><td></td><td><code>RH Z2</code></td><td><code>RH Z2</code></td></tr><tr><td>specific_humidity</td><td>2 m above ground</td><td></td><td><code>SPFH Z2</code></td><td><code>SPFH Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>No config yet: gdas-prepbufr is point data: needs PB2NC + PointStat, not written yet.</p>
+  
+</section>
+<section class="dataset pair" id="hrrr__stage-iv">
+  <h2>hrrr vs stage-iv</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#hrrr">NOAA HRRR 3 km CONUS forecasts (wrfsfc surface files)</a></dd><dt>Reference</dt><dd><a href="../metadata/#stage-iv">NCEP Stage IV multi-sensor precipitation analysis (CONUS)</a></dd><dt>Both cover</dt><dd>2014-07-30T18:00Z to ongoing</dd><dt>Data</dt><dd>wrfsfc_st4_01h: forecast wrfsfc downloaded from nodd-aws; reference st4_01h downloaded from nomads</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>precipitation_amount</td><td>Ground or water surface</td><td>sum over 1 h</td><td><code>APCP A01</code></td><td><code>APCP A01</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="hrrr__stage-iv/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: NOAA HRRR 3 km CONUS forecasts (wrfsfc surface files)
+#      vs NCEP Stage IV multi-sensor precipitation analysis (CONUS)
+# Generated by beacon_metadata.metplus from datasets/hrrr.yaml and
+# datasets/stage-iv.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   wrfsfc_st4_01h: forecast downloaded, reference downloaded
+
+[config]
+USE_CASE_DESC = hrrr__stage-iv
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(wrfsfc_st4_01h)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/hrrr__stage-iv
+
+MODEL = hrrr
+OBTYPE = stage-iv
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = stage-iv
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[wrfsfc_st4_01h]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/hrrr/wrfsfc/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/stage-iv/st4_01h/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_wrfsfc_st4_01h
+GRID_STAT_REGRID_METHOD = BUDGET
+FCST_GRID_STAT_VAR1_NAME = APCP
+FCST_GRID_STAT_VAR1_LEVELS = A01
+FCST_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+OBS_GRID_STAT_VAR1_NAME = APCP
+OBS_GRID_STAT_VAR1_LEVELS = A01
+OBS_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+</pre></details>
+  
+</section>
+<section class="dataset pair" id="hrrr__urma-2p5">
+  <h2>hrrr vs urma-2p5</h2>
+  <dl class="facts"><dt>Forecast</dt><dd><a href="../metadata/#hrrr">NOAA HRRR 3 km CONUS forecasts (wrfsfc surface files)</a></dd><dt>Reference</dt><dd><a href="../metadata/#urma-2p5">NCEP URMA 2.5 km CONUS surface analysis</a></dd><dt>Both cover</dt><dd>2014-07-30T18:00Z to ongoing</dd><dt>Data</dt><dd>wrfsfc_anl: forecast wrfsfc downloaded from nodd-aws; reference anl downloaded from nodd-aws or nomads</dd><dt>Data</dt><dd>wrfsfc_pcp_01h: forecast wrfsfc downloaded from nodd-aws; reference pcp_01h downloaded from nodd-aws</dd><dt>Leads</dt><dd>6 h, 12 h, 18 h, 24 h</dd></dl>
+  <h3>Shared variables</h3>
+  <div class="table-wrap"><table><thead><tr><th>Quantity</th><th>Level</th><th>Statistic</th><th>Forecast field</th><th>Reference field</th></tr></thead><tbody><tr><td>air_temperature</td><td>2 m above ground</td><td></td><td><code>TMP Z2</code></td><td><code>TMP Z2</code></td></tr><tr><td>dew_point_temperature</td><td>2 m above ground</td><td></td><td><code>DPT Z2</code></td><td><code>DPT Z2</code></td></tr><tr><td>specific_humidity</td><td>2 m above ground</td><td></td><td><code>SPFH Z2</code></td><td><code>SPFH Z2</code></td></tr><tr><td>eastward_wind</td><td>10 m above ground</td><td></td><td><code>UGRD Z10</code></td><td><code>UGRD Z10</code></td></tr><tr><td>northward_wind</td><td>10 m above ground</td><td></td><td><code>VGRD Z10</code></td><td><code>VGRD Z10</code></td></tr><tr><td>surface_air_pressure</td><td>Ground or water surface</td><td></td><td><code>PRES Z0</code></td><td><code>PRES Z0</code></td></tr><tr><td>precipitation_amount</td><td>Ground or water surface</td><td>sum over 1 h</td><td><code>APCP A01</code></td><td><code>APCP A01</code></td></tr></tbody></table></div>
+  <h3>METplus config</h3>
+  <p>GridStat compares each variable on the forecast grid, with the reference averaged onto it. <a href="hrrr__urma-2p5/GridStat.conf">GridStat.conf</a></p><details><summary>Show the config</summary><pre># GridStat: NOAA HRRR 3 km CONUS forecasts (wrfsfc surface files)
+#      vs NCEP URMA 2.5 km CONUS surface analysis
+# Generated by beacon_metadata.metplus from datasets/hrrr.yaml and
+# datasets/urma-2p5.yaml. Don&#x27;t edit; regenerate.
+#
+# Run with:
+#   run_metplus.py GridStat.conf config.VALID_BEG=YYYYMMDDHH config.VALID_END=YYYYMMDDHH \
+#       config.INPUT_BASE=&lt;staged inputs&gt; config.OUTPUT_BASE=&lt;output dir&gt;
+#
+# Data:
+#   wrfsfc_anl: forecast downloaded, reference downloaded
+#   wrfsfc_pcp_01h: forecast downloaded, reference downloaded
+
+[config]
+USE_CASE_DESC = hrrr__urma-2p5
+LOG_LEVEL = INFO
+
+PROCESS_LIST = GridStat(wrfsfc_anl), GridStat(wrfsfc_pcp_01h)
+
+LOOP_BY = VALID
+VALID_TIME_FMT = %Y%m%d%H
+VALID_INCREMENT = 6H
+LEAD_SEQ = 6, 12, 18, 24
+
+GRID_STAT_ONCE_PER_FIELD = False
+GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/grid_stat/hrrr__urma-2p5
+
+MODEL = hrrr
+OBTYPE = urma-2p5
+# beacon-gui reads the reference (observation source) from DESC.
+GRID_STAT_DESC = urma-2p5
+
+# Compare on the forecast grid, with the reference averaged onto it,
+# wherever the reference has data.
+GRID_STAT_REGRID_TO_GRID = FCST
+GRID_STAT_REGRID_METHOD = AW_MEAN
+GRID_STAT_REGRID_WIDTH = 1
+GRID_STAT_MASK_GRID = FULL
+GRID_STAT_MASK_POLY =
+
+# Partial sums and event counts are what beacon-gui aggregates; no NetCDF pairs.
+GRID_STAT_OUTPUT_FLAG_SL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_CNT = STAT
+GRID_STAT_OUTPUT_FLAG_VL1L2 = STAT
+GRID_STAT_OUTPUT_FLAG_VCNT = STAT
+GRID_STAT_OUTPUT_FLAG_CTC = STAT
+GRID_STAT_OUTPUT_FLAG_CTS = STAT
+GRID_STAT_NC_PAIRS_FLAG_LATLON = FALSE
+GRID_STAT_NC_PAIRS_FLAG_RAW = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DIFF = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO = FALSE
+GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_WEIGHT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_NBRHD = FALSE
+GRID_STAT_NC_PAIRS_FLAG_FOURIER = FALSE
+GRID_STAT_NC_PAIRS_FLAG_GRADIENT = FALSE
+GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP = FALSE
+GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK = FALSE
+
+[wrfsfc_anl]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/hrrr/wrfsfc/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/anl/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_wrfsfc_anl
+FCST_GRID_STAT_VAR1_NAME = TMP
+FCST_GRID_STAT_VAR1_LEVELS = Z2
+OBS_GRID_STAT_VAR1_NAME = TMP
+OBS_GRID_STAT_VAR1_LEVELS = Z2
+FCST_GRID_STAT_VAR2_NAME = DPT
+FCST_GRID_STAT_VAR2_LEVELS = Z2
+OBS_GRID_STAT_VAR2_NAME = DPT
+OBS_GRID_STAT_VAR2_LEVELS = Z2
+FCST_GRID_STAT_VAR3_NAME = SPFH
+FCST_GRID_STAT_VAR3_LEVELS = Z2
+OBS_GRID_STAT_VAR3_NAME = SPFH
+OBS_GRID_STAT_VAR3_LEVELS = Z2
+FCST_GRID_STAT_VAR4_NAME = UGRD
+FCST_GRID_STAT_VAR4_LEVELS = Z10
+OBS_GRID_STAT_VAR4_NAME = UGRD
+OBS_GRID_STAT_VAR4_LEVELS = Z10
+FCST_GRID_STAT_VAR5_NAME = VGRD
+FCST_GRID_STAT_VAR5_LEVELS = Z10
+OBS_GRID_STAT_VAR5_NAME = VGRD
+OBS_GRID_STAT_VAR5_LEVELS = Z10
+FCST_GRID_STAT_VAR6_NAME = PRES
+FCST_GRID_STAT_VAR6_LEVELS = Z0
+OBS_GRID_STAT_VAR6_NAME = PRES
+OBS_GRID_STAT_VAR6_LEVELS = Z0
+
+[wrfsfc_pcp_01h]
+FCST_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/hrrr/wrfsfc/{init?fmt=%Y%m%d%H}/f{lead?fmt=%3H}.grib2
+OBS_GRID_STAT_INPUT_TEMPLATE = {INPUT_BASE}/urma-2p5/pcp_01h/{valid?fmt=%Y%m%d%H}.grib2
+GRID_STAT_OUTPUT_PREFIX = {MODEL}_wrfsfc_pcp_01h
+GRID_STAT_REGRID_METHOD = BUDGET
+FCST_GRID_STAT_VAR1_NAME = APCP
+FCST_GRID_STAT_VAR1_LEVELS = A01
+FCST_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+OBS_GRID_STAT_VAR1_NAME = APCP
+OBS_GRID_STAT_VAR1_LEVELS = A01
+OBS_GRID_STAT_VAR1_THRESH = &gt;0, &gt;=0.254, &gt;=2.54, &gt;=12.7, &gt;=25.4
+</pre></details>
+  
+</section>
+  </main>
+</body>
+</html>

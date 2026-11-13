@@ -1,0 +1,68 @@
+schema_version: 0.2.0
+id: hrrr
+title: NOAA HRRR 3 km CONUS forecasts (wrfsfc surface files)
+short_name: HRRR
+description: >-
+  High-Resolution Rapid Refresh: NOAA's hourly-updated, convection-allowing
+  model over CONUS. Each lead time is one surface GRIB2 file with a wgrib2
+  index (.idx) next to it.
+kind: forecast
+model_type: nwp
+producer: NOAA/NWS/NCEP
+format: grib2
+
+spatial:
+  type: grid
+  bbox: [-134.1, 21.1, -60.9, 52.6]
+  grid: {projection: lambert_conformal, nx: 1799, ny: 1059, resolution: 3 km}
+
+time:
+  coverage: {start: 2014-07-30T18:00Z, end: null}
+  # HRRR runs every hour, but only 00, 06, 12 and 18Z go past 18 h (to 48 h).
+  cycles: [0, 6, 12, 18]
+  leads:
+    - {start: 0, end: 48, step: 1}
+
+epochs:
+  - start: 2020-12-02T12:00Z
+    label: HRRR v4
+    evidence: [NCEP implementation of HRRRv4 and RAPv5]
+
+locations:
+  - id: nodd-aws
+    provider: nodd
+    access: https
+    retention: permanent
+    coverage: {start: 2014-07-30T18:00Z}
+    files:
+      wrfsfc:
+        template: "https://noaa-hrrr-bdp-pds.s3.amazonaws.com/hrrr.{init?fmt=%Y%m%d}/conus/hrrr.t{init?fmt=%H}z.wrfsfcf{lead?fmt=%2H}.grib2"
+        index: wgrib2
+
+variables:
+  - {quantity: air_temperature, level: {type: height_above_ground, value: 2}, native: {name: TMP}}
+  - {quantity: dew_point_temperature, level: {type: height_above_ground, value: 2}, native: {name: DPT}}
+  - {quantity: relative_humidity, level: {type: height_above_ground, value: 2}, native: {name: RH}}
+  - {quantity: specific_humidity, level: {type: height_above_ground, value: 2}, native: {name: SPFH}}
+  - {quantity: eastward_wind, level: {type: height_above_ground, value: 10}, native: {name: UGRD}}
+  - {quantity: northward_wind, level: {type: height_above_ground, value: 10}, native: {name: VGRD}}
+  - quantity: wind_speed
+    level: {type: height_above_ground, value: 10}
+    statistic: {method: maximum, period: PT1H}
+    native: {name: WIND}
+    notes: Hourly maximum. MET derives the instantaneous speed from UGRD and VGRD.
+  - {quantity: wind_speed_of_gust, level: {type: surface}, native: {name: GUST}}
+  - {quantity: surface_air_pressure, level: {type: surface}, native: {name: PRES}}
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT1H}
+    native: {name: APCP}
+
+quality:
+  flag: unknown
+
+notes: >-
+  Bucket checked 2026-10-23: hrrr.20261020/conus/ has hrrr.t00z.wrfsfcf48 but
+  no hrrr.t01z.wrfsfcf24. The files also hold visibility (VIS), cloud ceiling
+  (HGT at cloud ceiling), radiation, 80 m wind and planetary boundary layer
+  height, which aren't listed here yet.

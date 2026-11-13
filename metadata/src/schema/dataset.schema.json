@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NCAR/beacon-dev/src/metadata/schema/dataset.schema.json",
+  "title": "BEACON input dataset record",
+  "description": "One forecast, analysis, or observation source that BEACON can verify against. Records store where data lives and what it contains, not the data itself.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "title", "kind", "producer", "format", "spatial", "time", "locations", "variables"],
+  "properties": {
+    "schema_version": {"$ref": "#/$defs/version"},
+    "id": {
+      "description": "BEACON dataset ID; must match the file name without .yaml.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "title": {"type": "string"},
+    "short_name": {"description": "Short label for menus and chart legends, e.g. GFS.", "type": "string", "maxLength": 16},
+    "description": {"type": "string"},
+    "kind": {
+      "description": "How BEACON uses the dataset: forecast to verify, gridded analysis, or point/station observations.",
+      "enum": ["forecast", "analysis", "observation"]
+    },
+    "model_type": {
+      "description": "Forecasts only. nwp = physics-based model; ai = machine-learned model; hybrid = both.",
+      "enum": ["nwp", "ai", "hybrid"]
+    },
+    "producer": {"description": "Organization that produces the data.", "type": "string"},
+    "identifiers": {
+      "description": "External IDs. A gdex ID lets tools pull and check GDEX metadata.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scheme", "value"],
+        "properties": {
+          "scheme": {"enum": ["gdex", "doi", "url", "other"]},
+          "value": {"type": "string"}
+        },
+        "allOf": [
+          {"if": {"properties": {"scheme": {"const": "gdex"}}},
+           "then": {"properties": {"value": {"pattern": "^d[0-9]{6}$"}}}},
+          {"if": {"properties": {"scheme": {"const": "doi"}}},
+           "then": {"properties": {"value": {"pattern": "^10\\.[0-9]+/\\S+$"}}}}
+        ]
+      }
+    },
+    "format": {"enum": ["grib2", "netcdf", "prepbufr", "ascii", "other"]},
+    "spatial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "bbox"],
+      "properties": {
+        "type": {"enum": ["grid", "points"]},
+        "bbox": {
+          "description": "[west, south, east, north] in degrees, longitudes -180..180.",
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "grid": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["projection", "nx", "ny"],
+          "properties": {
+            "projection": {"enum": ["latlon", "gaussian", "lambert_conformal", "polar_stereographic", "other"]},
+            "nx": {"type": "integer", "minimum": 1},
+            "ny": {"type": "integer", "minimum": 1},
+            "resolution": {"description": "Free text, e.g. '0.25 deg' or '2.5 km'.", "type": "string"}
+          }
+        },
+        "notes": {"type": "string"}
+      }
+    },
+    "time": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coverage"],
+      "properties": {
+        "coverage": {"$ref": "#/$defs/coverage"},
+        "cycles": {
+          "description": "Forecasts: initialization hours (UTC).",
+          "type": "array",
+          "items": {"type": "integer", "minimum": 0, "maximum": 23},
+          "uniqueItems": true
+        },
+        "leads": {"$ref": "#/$defs/leads"},
+        "frequency": {
+          "description": "Analyses and observations: interval between valid times.",
+          "$ref": "#/$defs/duration"
+        }
+      }
+    },
+    "epochs": {
+      "description": "Known changes, such as model upgrades, that affect comparability across time.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["start", "label"],
+        "properties": {
+          "start": {"$ref": "#/$defs/datetime"},
+          "label": {"type": "string"},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "locations": {
+      "description": "Copies of the data, in order of preference.",
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/location"}
+    },
+    "variables": {
+      "description": "Variables BEACON can use from this dataset. This is not every variable in the files.",
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/variable"}
+    },
+    "quality": {"$ref": "#/$defs/quality"},
+    "notes": {"type": "string"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"kind": {"const": "forecast"}}},
+      "then": {
+        "required": ["model_type"],
+        "properties": {"time": {"required": ["cycles", "leads"]}}
+      },
+      "else": {
+        "not": {"required": ["model_type"]},
+        "properties": {"time": {"required": ["frequency"]}}
+      }
+    }
+  ],
+  "$defs": {
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "datetime": {
+      "description": "UTC date or date-time: YYYY-MM-DD or YYYY-MM-DDTHH:MM[:SS]Z.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z)?$"
+    },
+    "duration": {
+      "description": "ISO 8601 duration, e.g. PT6H, P10D.",
+      "type": "string",
+      "pattern": "^P(?=[0-9T])([0-9]+Y)?([0-9]+M)?([0-9]+W)?([0-9]+D)?(T(?=[0-9])([0-9]+H)?([0-9]+M)?([0-9]+S)?)?$"
+    },
+    "coverage": {
+      "description": "Forecasts: range of init times. Analyses and observations: range of valid times. end null means ongoing.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start"],
+      "properties": {
+        "start": {"$ref": "#/$defs/datetime"},
+        "end": {"oneOf": [{"$ref": "#/$defs/datetime"}, {"type": "null"}]}
+      }
+    },
+    "leads": {
+      "description": "Forecast lead hours as inclusive ranges.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["start", "end", "step"],
+        "properties": {
+          "start": {"type": "integer", "minimum": 0},
+          "end": {"type": "integer", "minimum": 0},
+          "step": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {"description": "Key in vocabulary/levels.yaml.", "type": "string"},
+        "value": {"description": "In the level type's units.", "type": "number"},
+        "values": {
+          "description": "Several values of one level type, e.g. pressure levels.",
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "not": {"required": ["value", "values"]}
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["template"],
+      "properties": {
+        "template": {
+          "description": "Path or URL in METplus filename-template syntax: {init?fmt=%Y%m%d%H}, {valid?fmt=...}, {lead?fmt=%3H}.",
+          "type": "string"
+        },
+        "members": {
+          "description": "For archives: member names inside the file, outermost first, using the same template syntax.",
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "index": {
+          "description": "Inventory published next to each file: wgrib2 = <file>.idx, ecmwf = <file>.index.",
+          "enum": ["wgrib2", "ecmwf", "none"]
+        },
+        "valid_hours": {
+          "description": "Valid hours (UTC) this file exists for, if fewer than time.frequency implies.",
+          "type": "array",
+          "items": {"type": "integer", "minimum": 0, "maximum": 23}
+        }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provider", "access", "retention", "files"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "provider": {"description": "e.g. gdex, nodd, nomads, ncar.", "type": "string"},
+        "access": {"enum": ["posix", "https", "s3", "globus"]},
+        "retention": {
+          "description": "How far back this location keeps data: an ISO 8601 duration, 'permanent', or 'unknown'.",
+          "anyOf": [{"$ref": "#/$defs/duration"}, {"enum": ["permanent", "unknown"]}]
+        },
+        "coverage": {"$ref": "#/$defs/coverage"},
+        "latency": {"description": "Typical delay after init or valid time before data appears.", "$ref": "#/$defs/duration"},
+        "leads": {"$ref": "#/$defs/leads"},
+        "files": {
+          "description": "File streams at this location, keyed by a short name that variables refer to.",
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"$ref": "#/$defs/file"}
+        },
+        "notes": {"type": "string"}
+      }
+    },
+    "variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["quantity", "level", "native"],
+      "properties": {
+        "quantity": {"description": "Key in vocabulary/quantities.yaml.", "type": "string"},
+        "level": {"$ref": "#/$defs/level"},
+        "statistic": {
+          "description": "For values over a period, e.g. accumulated precipitation. Omit for instantaneous values.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "period"],
+          "properties": {
+            "method": {"enum": ["sum", "mean", "maximum", "minimum"]},
+            "period": {
+              "description": "ISO 8601 duration, or from_init for run totals.",
+              "anyOf": [{"$ref": "#/$defs/duration"}, {"const": "from_init"}]
+            }
+          }
+        },
+        "native": {
+          "description": "How MET addresses the field in the file: GRIB short name (TMP) or netCDF variable (t2m). level is MET's level string, e.g. (0,*,*); omit it when it can be derived from the level type (Z2, P500) or the statistic period (A06).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": {
+            "name": {"type": "string"},
+            "level": {"type": "string"},
+            "units": {"description": "Only when different from the quantity's units.", "type": "string"}
+          }
+        },
+        "file": {"description": "Key in a location's files; needed when a location has more than one.", "type": "string"},
+        "approximates": {
+          "description": "A level this variable stands in for, e.g. lowest model level used as 10 m. Add a quality note explaining it.",
+          "$ref": "#/$defs/level"
+        },
+        "start": {"description": "First time the variable is available, if later than coverage.start.", "$ref": "#/$defs/datetime"},
+        "end": {"$ref": "#/$defs/datetime"},
+        "notes": {"type": "string"}
+      }
+    },
+    "quality": {
+      "description": "Curated fitness for use. Availability (is a file there right now?) is tracked separately at run time.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag"],
+      "properties": {
+        "flag": {"$ref": "#/$defs/flag"},
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["flag", "summary", "recorded"],
+            "properties": {
+              "flag": {"$ref": "#/$defs/flag"},
+              "summary": {"type": "string"},
+              "scope": {
+                "description": "What the note applies to; omit for the whole dataset.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "quantities": {"type": "array", "items": {"type": "string"}},
+                  "locations": {"type": "array", "items": {"type": "string"}},
+                  "start": {"$ref": "#/$defs/datetime"},
+                  "end": {"$ref": "#/$defs/datetime"}
+                }
+              },
+              "evidence": {"type": "array", "items": {"type": "string"}},
+              "recorded": {"$ref": "#/$defs/datetime"},
+              "by": {"type": "string"}
+            }
+          }
+        },
+        "observation_qc": {
+          "description": "Per-observation QC carried in the data and how BEACON filters on it.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scheme"],
+          "properties": {
+            "scheme": {"type": "string"},
+            "beacon_setting": {"type": "string"},
+            "notes": {"type": "string"}
+          }
+        }
+      }
+    },
+    "flag": {
+      "description": "good = fit for BEACON comparisons; caution = usable with known caveats; do_not_use = known bad; unknown = not yet assessed.",
+      "enum": ["good", "caution", "do_not_use", "unknown"]
+    }
+  }
+}

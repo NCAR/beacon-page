@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Stamp the theme before first paint so neither theme ever flashes.
+         lib/state/theme.svelte.ts owns data-theme after startup. -->
+    <script>
+      (function () {
+        // Light-only for now; see LIGHT_ONLY in lib/state/theme.svelte.ts.
+        var LIGHT_ONLY = true;
+        var stored = localStorage.getItem("beacon-theme");
+        var dark =
+          !LIGHT_ONLY &&
+          (stored === "dark" ||
+          (stored !== "light" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches));
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      })();
+    </script>
+    <link rel="icon" href="/beacon-page/gui/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- The brand band is Dark Blue in both themes, so the browser chrome is too. -->
+    <meta name="theme-color" content="#00357a" />
+    <link rel="manifest" href="/beacon-page/gui/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/beacon-page/gui/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="BEACON" />
+    <title>BEACON GUI</title>
+    <script type="module" crossorigin src="/beacon-page/gui/assets/main-CGfoKtQd.js"></script>
+    <link rel="modulepreload" crossorigin href="/beacon-page/gui/assets/Standing-DkMhFmUX.js">
+    <link rel="stylesheet" crossorigin href="/beacon-page/gui/assets/Standing-DT0pgbfR.css">
+    <link rel="stylesheet" crossorigin href="/beacon-page/gui/assets/main-CzK2stWC.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
