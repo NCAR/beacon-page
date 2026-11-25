@@ -1,0 +1,55 @@
+schema_version: 0.2.0
+id: wildfire
+title: Wildfire, utilities and insurance
+short_name: Wildfire / utilities / insurance
+summary: >-
+  Compare ECMWF AIFS (AI) with HRRR (full physics) for high winds, low
+  humidity, and the duration of dangerous fire-weather conditions. BEACON
+  retrieves forecasts and observations and evaluates threshold exceedance and
+  warning lead time relevant to utility preparedness and wildfire exposure.
+source: docs/surveyResponse.md, 1. End-to-end BEACON run
+forecasts: [aifs-single, hrrr]
+reference: gdas-prepbufr
+message_types: [ADPSFC]
+domain: CONUS
+profile: fire-weather
+leads: {start: 6, end: 48, step: 6}
+
+fields:
+  - quantity: wind_speed
+    level: {type: height_above_ground, value: 10}
+    thresholds:
+      - {met: ">=8.9", label: "20 mph"}
+      - {met: ">=11.2", label: "25 mph"}
+      - {met: ">=13.4", label: "30 mph"}
+    why: Sustained winds at and above common Red Flag Warning criteria.
+  - quantity: relative_humidity
+    level: {type: height_above_ground, value: 2}
+    thresholds:
+      - {met: "<=15", label: "15 %"}
+      - {met: "<=25", label: "25 %"}
+    why: Low humidity dries fuels; 15 % is a common Red Flag criterion.
+  - quantity: air_temperature
+    level: {type: height_above_ground, value: 2}
+    why: Context for humidity errors.
+
+regions:
+  - {name: CONUS, display: Contiguous US, poly: CONUS}
+  - {name: WEST, display: Western US, poly: WEST}
+  - {name: SWC, display: Southwest Coast (California), poly: SWC}
+  - {name: GRB, display: Great Basin, poly: GRB}
+
+not_yet:
+  - item: Duration of dangerous conditions
+    why: Needs hour-by-hour exceedance series; AIFS writes output every 6 hours.
+  - item: Red Flag conditions (low humidity and strong wind together)
+    why: Needs a combined event per station and time; MET scores one field at a time.
+  - item: Gusts
+    why: HRRR forecasts gusts; AIFS doesn't.
+  - item: Warning lead time
+    why: For now, compare scores across lead times in the GUI.
+
+notes: >-
+  Thresholds are typical National Weather Service Red Flag values; utilities
+  and fire agencies use their own. AIFS has no humidity output, so BEACON
+  computes it from AIFS temperature and dewpoint.

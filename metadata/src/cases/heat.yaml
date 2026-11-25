@@ -1,0 +1,52 @@
+schema_version: 0.2.0
+id: heat
+title: Extreme heat
+short_name: Extreme heat
+summary: >-
+  Compare AIFS (AI) with HRRR (full physics) for temperature, humidity, and
+  heat-event onset and duration. BEACON retrieves forecasts and observations
+  and evaluates hazardous threshold exceedance. Heat index or WBGT could be
+  included where the necessary inputs and reference measurements are
+  available.
+source: docs/surveyResponse.md, 1. End-to-end BEACON run
+forecasts: [aifs-single, hrrr]
+reference: gdas-prepbufr
+message_types: [ADPSFC]
+domain: CONUS
+profile: severe
+leads: {start: 6, end: 48, step: 6}
+
+fields:
+  - quantity: air_temperature
+    level: {type: height_above_ground, value: 2}
+    thresholds:
+      - {met: ">=305.37", label: "90 °F"}
+      - {met: ">=308.15", label: "95 °F"}
+      - {met: ">=310.93", label: "100 °F"}
+    why: Hazardous heat thresholds.
+  - quantity: dew_point_temperature
+    level: {type: height_above_ground, value: 2}
+    why: Moisture, which raises heat stress at the same temperature.
+  - quantity: relative_humidity
+    level: {type: height_above_ground, value: 2}
+    why: Input to heat index.
+
+regions:
+  - {name: CONUS, display: Contiguous US, poly: CONUS}
+  - {name: SWD, display: Southwest Desert, poly: SWD}
+  - {name: SPL, display: Southern Plains, poly: SPL}
+  - {name: SEC, display: Southeast Coast, poly: SEC}
+
+not_yet:
+  - item: Heat index and WBGT
+    why: Both have to be computed per model and for observations; WBGT also needs radiation, which both models forecast.
+  - item: Onset and duration of heat events
+    why: Needs hour-by-hour series; AIFS writes output every 6 hours.
+  - item: Overnight minimum temperature
+    why: Needs the minimum over each night, not 6-hourly values.
+
+notes: >-
+  Valid times are 00, 06, 12 and 18 UTC. 18Z is late morning in the West and
+  early afternoon in the East; 00Z is late afternoon in the West and evening
+  in the East. The daily peak is often between them until hourly comparisons
+  are added.

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NCAR/beacon-dev/src/metadata/schema/vocabulary.schema.json",
+  "title": "BEACON variable vocabulary",
+  "description": "Either the quantities file or the levels file under vocabulary/.",
+  "type": "object",
+  "oneOf": [
+    {"required": ["schema_version", "quantities"], "not": {"required": ["levels"]}},
+    {"required": ["schema_version", "levels"], "not": {"required": ["quantities"]}}
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "quantities": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/quantity"}
+    },
+    "levels": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_]*$"},
+      "additionalProperties": {"$ref": "#/$defs/level_type"}
+    }
+  },
+  "$defs": {
+    "level_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": {"type": "string"},
+        "value": {"type": "number"}
+      }
+    },
+    "quantity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cf", "units", "grib2"],
+      "properties": {
+        "cf": {"description": "CF standard name, or null for beacon_ quantities.", "type": ["string", "null"]},
+        "units": {"description": "Canonical units (UDUNITS).", "type": "string"},
+        "description": {"type": "string"},
+        "level": {"description": "Level type implied by the quantity's name.", "type": "string"},
+        "vector_component": {"enum": ["u", "v"]},
+        "grib2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["discipline", "category", "number", "name"],
+          "properties": {
+            "discipline": {"type": "integer"},
+            "category": {"type": "integer"},
+            "number": {"type": "integer"},
+            "name": {"type": "string"},
+            "units": {"type": "string"}
+          }
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system", "name"],
+            "properties": {
+              "system": {"enum": ["esm", "ecmwf", "earth2studio"]},
+              "name": {"type": "string"},
+              "id": {"type": "integer"},
+              "level": {"$ref": "#/$defs/level_ref"},
+              "units": {"type": "string"},
+              "period": {"type": "string"},
+              "note": {"type": "string"}
+            }
+          }
+        },
+        "derive": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "expression"],
+            "properties": {
+              "from": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+              "expression": {"type": "string"},
+              "note": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "level_type": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "grib2_surface_type"],
+      "properties": {
+        "description": {"type": "string"},
+        "units": {"type": "string"},
+        "grib2_surface_type": {"type": "integer"},
+        "met": {"type": "string"},
+        "wgrib2": {"type": "string"},
+        "gdex": {"type": "string"},
+        "cf_coordinate": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "standard_name": {"type": "string"},
+            "units": {"type": "string"},
+            "positive": {"enum": ["up", "down"]}
+          }
+        }
+      }
+    }
+  }
+}

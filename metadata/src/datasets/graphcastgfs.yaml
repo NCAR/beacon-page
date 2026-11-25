@@ -1,0 +1,84 @@
+schema_version: 0.2.0
+id: graphcastgfs
+title: NOAA GraphCast-GFS experimental global AI forecast (GRIB2)
+short_name: GraphCast-GFS
+description: >-
+  Google DeepMind's GraphCast run experimentally by NCEP from GFS (GDAS)
+  initial conditions, four times a day, out to 16 days. The same starting
+  point as the physics-based GFS, so the two compare an AI model with a
+  physics model from one analysis. Each lead time is one GRIB2 file with a
+  wgrib2 index (.idx) next to it. NCEP's operational AIGFS (aigfs) followed
+  it in April 2026.
+kind: forecast
+model_type: ai
+producer: NOAA/NWS/NCEP
+format: grib2
+
+spatial:
+  type: grid
+  bbox: [-180, -90, 180, 90]
+  grid: {projection: latlon, nx: 1440, ny: 721, resolution: 0.25 deg}
+
+time:
+  coverage: {start: 2024-02-05T12:00Z, end: 2026-05-05T00:00Z}
+  cycles: [0, 6, 12, 18]
+  leads:
+    - {start: 0, end: 384, step: 6}
+
+locations:
+  - id: nodd-aws
+    provider: nodd
+    access: https
+    retention: permanent
+    files:
+      pgrb2:
+        template: "https://noaa-nws-graphcastgfs-pds.s3.amazonaws.com/graphcastgfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/forecasts_13_levels/graphcastgfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%3H}"
+        index: wgrib2
+    notes: >-
+      Found by listing the bucket (2026-11-20): graphcastgfs.20240205 12Z to
+      graphcastgfs.20260505 00Z, each run to f384 every 6 h, with the GDAS
+      input it started from in input/. The same names on 2024-08-01,
+      2025-01-01, 2025-08-09 and 2026-05-05. Early runs also have a
+      forecasts_37_levels folder; some have forecasts_13_levels_test.
+
+variables:
+  - {quantity: air_temperature, level: {type: height_above_ground, value: 2}, native: {name: TMP}}
+  - {quantity: eastward_wind, level: {type: height_above_ground, value: 10}, native: {name: UGRD}}
+  - {quantity: northward_wind, level: {type: height_above_ground, value: 10}, native: {name: VGRD}}
+  - {quantity: air_pressure_at_mean_sea_level, level: {type: mean_sea_level}, native: {name: PRMSL}}
+  - quantity: precipitation_amount
+    level: {type: surface}
+    statistic: {method: sum, period: PT6H}
+    native: {name: APCP}
+    notes: >-
+      6 h buckets (6-12 hour acc at f012). Each file also has the run total
+      (0-12 hour acc), and f006 has 0-6 hour acc twice.
+  - quantity: geopotential_height
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: HGT, units: gpm}
+  - quantity: air_temperature
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: TMP}
+  - quantity: eastward_wind
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: UGRD}
+  - quantity: northward_wind
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: VGRD}
+  - quantity: specific_humidity
+    level: {type: isobaric, values: [50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 850, 925, 1000]}
+    native: {name: SPFH}
+
+quality:
+  flag: unknown
+  notes:
+    - flag: caution
+      summary: >-
+        Experimental: NCEP ran it for evaluation, not as an operational
+        product, and replaced it with the operational AIGFS.
+      recorded: 2026-11-20
+
+notes: >-
+  No dewpoint, humidity or gusts near the surface, and no 10 m wind speed:
+  MET derives WIND from UGRD and VGRD. Vertical velocity (VVEL) on the same
+  13 levels isn't listed.

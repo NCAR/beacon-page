@@ -1,0 +1,105 @@
+schema_version: 0.2.0
+id: wildfire-2025-03
+title: "Wildfire, utilities and insurance: 14 March 2025 Southern Plains outbreak"
+short_name: "Wildfire: Mar 2025 Southern Plains"
+summary: >-
+  Compare ECMWF AIFS (AI) with HRRR (full physics) for high winds, low
+  humidity, and the duration of dangerous fire-weather conditions, in the
+  14 March 2025 Southern Plains outbreak. SPC rated eastern New Mexico, the
+  Texas Panhandle and Oklahoma Extremely Critical; Oklahoma had its windiest
+  day in Mesonet history, with gusts to 90 mph. BEACON retrieves forecasts
+  and observations and evaluates threshold exceedance and warning lead time
+  relevant to utility preparedness and wildfire exposure.
+source: >-
+  docs/surveyResponse.md, 1. End-to-end BEACON run; event and settings from
+  UTILITIES.md, step 0 (2026-11-02)
+forecasts: [aifs-single, hrrr]
+reference: gdas-prepbufr
+message_types: [ADPSFC]
+domain: CONUS
+profile: fire-weather
+# Valid times every hour. AIFS is scored every 6 h out to 240 h (10 days),
+# HRRR every hour out to 48 h: each at the leads and runs it has.
+leads: {start: 1, end: 240, step: 1, per_forecast: true}
+
+fields:
+  - quantity: wind_speed
+    level: {type: height_above_ground, value: 10}
+    thresholds:
+      - {met: ">=8.9", label: "20 mph"}
+      - {met: ">=11.2", label: "25 mph"}
+      - {met: ">=13.4", label: "30 mph"}
+    why: Sustained winds at and above common Red Flag Warning criteria.
+  - quantity: relative_humidity
+    level: {type: height_above_ground, value: 2}
+    thresholds:
+      - {met: "<=15", label: "15 %"}
+    why: Low humidity dries fuels; 15 % is the critical level chosen in step 0.
+  - quantity: air_temperature
+    level: {type: height_above_ground, value: 2}
+    why: Context for humidity errors.
+
+regions:
+  - name: EVENT
+    display: Event stations (Southern Plains)
+    stations: [KLBB, KMAF, KCDS, KSPS, KSWO, KABI, KLAW, KROW, KOKC, KTUL,
+               KAMA, KPNC, KICT, KCSM, KGAG, KWWR, KDHT, KPPA, KDDC]
+  - {name: SPL, display: Southern Plains, poly: SPL}
+
+# Maps for the GUI's Fields page: AIFS and HRRR against the URMA analysis on
+# one 0.1-degree grid over the Southern Plains and the event stations, every
+# 6 hours (AIFS's own step; HRRR's 00, 06, 12 and 18Z runs).
+gridded:
+  reference: urma-2p5
+  step: 6
+  grid: {lat: [26, 40.5], lon: [-107, -94], spacing: 0.1}
+  display: Southern Plains map box
+
+event:
+  # The afternoon and evening of the 14th (dangerous hours 16Z-04Z), then a
+  # quiet day, so false alarms can be scored.
+  window: {start: 2025-03-14T12:00Z, end: 2025-03-16T12:00Z}
+  display: {start: 2025-03-12T00:00Z, end: 2025-03-16T12:00Z}
+  region: EVENT
+  stations:
+    KLBB: Lubbock, TX
+    KMAF: Midland, TX
+    KCDS: Childress, TX
+    KSPS: Wichita Falls, TX
+    KSWO: Stillwater, OK
+    KABI: Abilene, TX
+    KLAW: Lawton, OK
+    KROW: Roswell, NM
+    KOKC: Oklahoma City, OK
+    KTUL: Tulsa, OK
+    KAMA: Amarillo, TX
+    KPNC: Ponca City, OK
+    KICT: Wichita, KS
+    KCSM: Clinton-Sherman, OK
+    KGAG: Gage, OK
+    KWWR: Woodward, OK
+    KDHT: Dalhart, TX
+    KPPA: Pampa, TX
+    KDDC: Dodge City, KS
+  danger:
+    - {quantity: wind_speed, level: {type: height_above_ground, value: 10}, met: ">=8.9", label: "20 mph"}
+    - {quantity: relative_humidity, level: {type: height_above_ground, value: 2}, met: "<=15", label: "15 %"}
+  called: {min_hours: 2, onset_tolerance_h: 6}
+
+not_yet:
+  - item: Gusts
+    why: Utilities decide power shutoffs on gusts; HRRR forecasts them, AIFS doesn't.
+  - item: Fuel dryness
+    why: Red Flag decisions also weigh fuels; BEACON compares weather only.
+
+notes: >-
+  Dangerous fire weather is wind of at least 20 mph with RH of 15 % or less
+  at the same station and hour, for at least 2 hours, with the forecast onset
+  within 6 hours of the observed one. The onset is the first hour of the
+  first spell of 2 dangerous hours in a row, not a lone dangerous hour
+  before it. NWS offices and utilities set their own
+  values, and Red Flag criteria use 20 ft winds where BEACON compares 10 m
+  winds. AIFS has values every 6 hours, so it is judged only where the
+  observations at those times show the event starting within 6 hours of the
+  observed onset. AIFS has no humidity output, so BEACON computes
+  it from AIFS temperature and dewpoint.

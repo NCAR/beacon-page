@@ -1,0 +1,51 @@
+# Vertical level types and how other systems spell them.
+#
+# Dataset records refer to a level as {type: <key>, value: <number>}. The value
+# uses the `units` given here. GRIB2 stores isobaric levels in Pa, but MET
+# (P500) and wgrib2 (500 mb) use hPa, so hPa is used here as well.
+#
+# In the `met` and `wgrib2` patterns, {value} is replaced by the level value.
+# Sources: WMO GRIB2 Code Table 4.5 (github.com/wmo-im/GRIB2, v37), MET level
+# syntax (MET User's Guide), GDEX /api/metadata level codes.
+
+schema_version: 0.1.0
+
+levels:
+  surface:
+    description: Ground or water surface
+    grib2_surface_type: 1
+    met: Z0
+    wgrib2: surface
+    gdex: SFC
+
+  height_above_ground:
+    description: Specified height above ground
+    units: m
+    grib2_surface_type: 103
+    met: Z{value}
+    wgrib2: "{value} m above ground"
+    gdex: HTGL
+    cf_coordinate: {standard_name: height, units: m, positive: up}
+
+  isobaric:
+    description: Isobaric surface
+    units: hPa
+    grib2_surface_type: 100
+    met: P{value}
+    wgrib2: "{value} mb"
+    gdex: ISBL
+    cf_coordinate: {standard_name: air_pressure, units: hPa, positive: down}
+
+  mean_sea_level:
+    description: Mean sea level
+    grib2_surface_type: 101
+    met: L0
+    wgrib2: mean sea level
+    gdex: MSL
+
+  model_level:
+    description: >-
+      Native model level number. Its meaning depends on the model's vertical
+      coordinate, so record the coordinate in the variable's notes.
+    units: "1"
+    grib2_surface_type: 105

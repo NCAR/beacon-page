@@ -1,0 +1,87 @@
+schema_version: 0.2.0
+id: credit-nrt
+title: NCAR CREDIT near-real-time demo forecasts (6-hourly)
+short_name: CREDIT
+description: >-
+  CREDIT AI model forecasts initialized from GFS, run at NCAR. Each cycle
+  directory also holds the model checkpoint (model_checkpoint.pt) and
+  configuration (model.yml) used for that run.
+kind: forecast
+model_type: ai
+producer: NSF NCAR (MILES CREDIT)
+format: netcdf
+
+spatial:
+  type: grid
+  bbox: [-180, -90, 180, 90]
+  grid: {projection: gaussian, nx: 1280, ny: 640, resolution: N320 Gaussian (about 0.28 deg)}
+
+time:
+  coverage: {start: 2026-04-07T12:00Z, end: null}
+  cycles: [0, 6, 12, 18]
+  leads:
+    - {start: 6, end: 120, step: 6}
+
+locations:
+  - id: ncar-scratch
+    provider: ncar
+    access: posix
+    retention: unknown
+    coverage: {start: 2026-04-07T12:00Z, end: 2026-10-01T06:00Z}
+    files:
+      pred:
+        template: "/glade/derecho/scratch/jimenez/creditout/demo_nrt/6h/{init?fmt=%Y%m%d%H}/{init?fmt=%Y-%m-%dT%H}Z/pred_{init?fmt=%Y-%m-%dT%H}Z_{lead?fmt=%3H}.nc"
+    notes: Derecho scratch space owned by another user; files may be purged.
+
+variables:
+  - {quantity: air_temperature, level: {type: height_above_ground, value: 2}, native: {name: t2m, level: "(0,*,*)"}}
+  - quantity: eastward_wind
+    level: {type: model_level, value: 137}
+    approximates: {type: height_above_ground, value: 10}
+    native: {name: U, level: "(0,15,*,*)", units: m s**-1}
+    notes: Index 15 of the level dimension is IFS L137 level 137, the lowest model level.
+  - quantity: northward_wind
+    level: {type: model_level, value: 137}
+    approximates: {type: height_above_ground, value: 10}
+    native: {name: V, level: "(0,15,*,*)", units: m s**-1}
+  - quantity: specific_humidity
+    level: {type: model_level, value: 137}
+    approximates: {type: height_above_ground, value: 2}
+    native: {name: Q, level: "(0,15,*,*)", units: kg kg**-1}
+  - {quantity: air_pressure_at_mean_sea_level, level: {type: mean_sea_level}, native: {name: mean_sea_level_pressure, level: "(0,*,*)"}}
+  - {quantity: surface_air_pressure, level: {type: surface}, native: {name: SP, level: "(0,*,*)"}}
+  - {quantity: geopotential, level: {type: isobaric, value: 500}, native: {name: Z500, level: "(0,*,*)", units: m**2 s**-2}}
+  - {quantity: air_temperature, level: {type: isobaric, value: 500}, native: {name: T500, level: "(0,*,*)"}}
+  - {quantity: eastward_wind, level: {type: isobaric, value: 500}, native: {name: U500, level: "(0,*,*)"}}
+  - {quantity: northward_wind, level: {type: isobaric, value: 500}, native: {name: V500, level: "(0,*,*)"}}
+  - {quantity: specific_humidity, level: {type: isobaric, value: 500}, native: {name: Q500, level: "(0,*,*)"}}
+
+quality:
+  flag: caution
+  notes:
+    - flag: caution
+      summary: >-
+        beacon-vx verifies lowest-model-level U, V and Q as 10 m wind and 2 m
+        humidity. Level 137 is roughly 10 m above ground, so the humidity
+        match is the weaker approximation.
+      scope: {quantities: [eastward_wind, northward_wind, specific_humidity]}
+      evidence: [src/beacon-vx/parm/PointStat_fcstCREDIT_obsGDAS.conf]
+      recorded: 2026-10-22
+    - flag: caution
+      summary: >-
+        Files declare Conventions CF-1.11, but T500 has the invalid
+        standard_name "air_temperature (at 500 hPa)" and Z500 has none.
+        Don't rely on the files' own CF attributes.
+      scope: {quantities: [air_temperature, geopotential]}
+      recorded: 2026-10-22
+    - flag: unknown
+      summary: >-
+        Cycle directories after 2026-10-01 06Z contain job logs but no
+        prediction files (checked 2026-10-22).
+      scope: {start: 2026-10-01T12:00Z}
+      recorded: 2026-10-22
+
+notes: >-
+  No precipitation output. The files also have U/V/T/Q/Z_PRES at 300, 500,
+  850 and 925 hPa and U/V/T/Q_HEIGHT at 100 to 6000 m above ground, which
+  are not listed here yet.

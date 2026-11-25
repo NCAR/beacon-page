@@ -1,0 +1,410 @@
+/* NCAR colors, the same values as beacon-gui's src/app.css: Dark Blue band,
+   Blue for links and buttons, Orange as a small accent, on white. */
+:root {
+  --bg: #ffffff;
+  --surface: #f4f8fd;
+  --text: #011837;
+  --muted: #4a6076;
+  --border: #d6e1ec;
+  --accent: #0057c2;
+  --accent-soft: #e3eefb;
+  --band: #00357a;
+  --band-text: #ffffff;
+  --orange: #faa119;
+  --good: #1d7a46;
+  --caution: #7a4d05;
+  --bad: #b3382c;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+a { color: var(--accent); }
+
+header.site {
+  background: var(--band);
+  color: var(--band-text);
+  border-bottom: 3px solid var(--orange);
+  padding: 0.75rem 1rem;
+}
+
+header.site .brand {
+  color: var(--band-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+header.site .crumb { color: var(--band-text); opacity: 0.8; }
+header.site .crumb a { color: inherit; }
+
+main {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+h1 { margin: 0.5rem 0; font-size: 1.9rem; }
+h2 { margin-top: 2.5rem; font-size: 1.35rem; }
+h3 { margin-top: 1.5rem; font-size: 1.05rem; }
+
+.lead { color: var(--muted); font-size: 1.1rem; max-width: 46rem; }
+.small, .meta { color: var(--muted); font-size: 0.9rem; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.card {
+  display: block;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+}
+
+.card:hover, .card:focus-visible { border-color: var(--accent); background: var(--accent-soft); }
+
+/* Front page: use cases on the left, the Information links stacked on the right;
+   one column on narrow screens. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18rem;
+  gap: 2rem;
+  align-items: start;
+}
+.more h2 { margin-top: 1.5rem; }
+.more .cards { grid-template-columns: 1fr; margin-top: 0.75rem; }
+.more .card h2 { margin: 0 0 0.5rem; }
+
+@media (max-width: 60rem) {
+  .layout { grid-template-columns: 1fr; }
+}
+.card h2 { margin: 0 0 0.5rem; color: var(--accent); }
+.card p { margin: 0.25rem 0; }
+
+code {
+  font: 0.85em/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+.table-wrap { overflow-x: auto; margin: 0.75rem 0; }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+th { background: var(--surface); font-weight: 600; white-space: nowrap; }
+/* Data Catalog page, Downloaded: one line per field; narrow screens scroll the table. */
+.downloaded td { white-space: nowrap; }
+
+dl.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0.75rem 0;
+}
+
+dl.facts dt { color: var(--muted); }
+dl.facts dd { margin: 0; }
+
+.flag {
+  display: inline-block;
+  padding: 0 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.flag.good { color: var(--good); }
+.flag.caution { color: var(--caution); }
+.flag.do_not_use { color: var(--bad); }
+.flag.unknown { color: var(--muted); }
+
+section.dataset {
+  border-top: 1px solid var(--border);
+  margin-top: 2.5rem;
+}
+
+ul.findings li { margin: 0.2rem 0; }
+
+@media (max-width: 40rem) {
+  dl.facts { grid-template-columns: 1fr; }
+  dl.facts dd { margin-bottom: 0.5rem; }
+}
+
+.picker { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 1.5rem 0 0.5rem; }
+.picker label { font-weight: 600; }
+.picker select {
+  max-width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font: 0.82rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+details summary { cursor: pointer; color: var(--accent); }
+
+.run { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+.run input, .run button {
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.run input { background: var(--bg); }
+.run button { cursor: pointer; border-color: var(--accent); background: var(--accent); color: #ffffff; }
+.run button:hover:not(:disabled) { background: var(--band); border-color: var(--band); }
+.run button:disabled { cursor: not-allowed; border-color: var(--border); background: var(--surface); color: var(--muted); }
+
+/* The read-only copy's Results link to the GUI, as a large button. */
+.gui-link { margin: 0.75rem 0; }
+.gui-link a.button {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.gui-link a.button:hover { background: var(--band); }
+.gui-link a.button:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+
+.status { font-weight: 600; white-space: nowrap; }
+.status.done { color: var(--good); }
+.status.running, .status.queued { color: var(--accent); }
+.status.failed, .status.interrupted { color: var(--bad); }
+.status.stopped { color: var(--muted); }
+/* The red ✕ after a waiting or running job's status: stops the job. */
+.status .stop {
+  margin-left: 0.4rem;
+  padding: 0 0.3rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  color: var(--bad);
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.status .stop:hover, .status .stop:focus-visible { border-color: var(--bad); background: #fbeceb; }
+
+.use-cases { margin-top: 1.5rem; }
+.use-cases > .picker label { font-size: 1.35rem; }
+.use-cases > .picker select { font-size: 1.05rem; font-weight: 600; }
+section.case { margin-top: 1rem; }
+
+/* Create Event: "or + Create a new event…" after the event menu, and the chat
+   dialog (portal.js). The button is outlined so it reads as a second choice,
+   not as a Go button for the menu. */
+.picker .create-choice { display: inline-flex; align-items: center; gap: 0.75rem; margin-left: 0.75rem; }
+.picker .create-choice[hidden] { display: none; }
+.picker .create-choice .or { color: var(--muted); }
+.picker .create-event {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.picker .create-event:hover, .picker .create-event:focus-visible { background: var(--accent-soft); }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+dialog.create-event {
+  width: min(64rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+}
+dialog.create-event::backdrop { background: rgba(1, 24, 55, 0.45); }
+.create-event .dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.create-event .dialog-head h2 { margin: 0; }
+.create-event .close {
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.create-event .chat-status { margin: 0.25rem 0 0.75rem; }
+
+.create-event .chat-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+.create-event .chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 12rem;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.create-event .chat-msg {
+  max-width: 90%;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.create-event .chat-msg.user { align-self: flex-end; background: var(--accent); color: #ffffff; }
+.create-event .chat-msg.assistant { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); }
+.create-event .chat-msg.pending { color: var(--muted); font-style: italic; }
+.create-event .chat-msg.note { align-self: flex-start; color: var(--muted); font-size: 0.9rem; }
+
+.create-event .proposal {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.92rem;
+}
+.create-event .proposal h3 { margin: 0 0 0.5rem; }
+.create-event .proposal dl.facts { grid-template-columns: max-content 1fr; margin: 0; }
+.create-event .proposal-problems { margin: 0.5rem 0 0; padding-left: 1.2rem; color: var(--caution); }
+.create-event .proposal-stations { margin-top: 0.5rem; }
+
+.create-event .chat-input { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+.create-event .chat-input textarea {
+  flex: 1;
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  resize: vertical;
+}
+.create-event .dialog-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.75rem; }
+.create-event .chat-input button, .create-event .dialog-actions button {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+.create-event .chat-input button, .create-event .dialog-actions .create { background: var(--accent); color: #ffffff; }
+.create-event button:disabled { cursor: not-allowed; border-color: var(--border); background: var(--surface); color: var(--muted); }
+
+/* Events made in the chat: where they came from, and a way to remove them. */
+.created-actions .delete-event {
+  margin-left: 0.25rem;
+  padding: 0 0.4rem;
+  border: 1px solid var(--bad);
+  border-radius: 4px;
+  background: none;
+  color: var(--bad);
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 48rem) {
+  .create-event .chat-body { grid-template-columns: 1fr; }
+  .create-event .chat-log, .create-event .proposal { max-height: 35vh; }
+}
+
+/* Data Catalog page: the catalog dashboard (tiles, one sentence per source) and the
+   Candidates filters and table (catalog.js). */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 0.75rem;
+}
+.stat {
+  display: block;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+}
+a.stat:hover, a.stat:focus-visible { border-color: var(--accent); background: var(--accent-soft); }
+.stat .value {
+  display: block;
+  color: var(--band);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.stat .label { display: block; font-weight: 600; }
+.stat .detail { display: block; color: var(--muted); font-size: 0.88rem; }
+ul.sentences { max-width: 52rem; padding-left: 1.2rem; }
+ul.sentences li { margin: 0.25rem 0; }
+
+th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.filters { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0.75rem 0; }
+.filters label { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.92rem; }
+.filters input[type="search"], .filters select {
+  max-width: 100%;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+.table-wrap.scroll { max-height: 70vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; }
+.table-wrap.scroll table { margin: 0; }
+.table-wrap.scroll th { position: sticky; top: 0; z-index: 1; }
+table.catalog td:nth-child(2) { min-width: 16rem; }
+.nowrap { white-space: nowrap; }

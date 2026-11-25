@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NCAR/beacon-dev/src/metadata/schema/catalog.schema.json",
+  "title": "BEACON Data Catalog source",
+  "description": "What one source of data offers, one dataset per entry: catalog/<source>.yaml. A source is anywhere BEACON could read data from: a data service (GDEX), an open-data program (NOAA's NODD, ECMWF open data) or a local collection (on GLADE or another disk). The file is generated (gdex-index for GDEX) or hand-written. Entries are candidates: a dataset is usable in cases once it has a record in datasets/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source", "datasets"],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "title"],
+      "properties": {
+        "id": {"description": "Must match the file name without .yaml.", "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+        "name": {"description": "Short name for tables, e.g. GDEX.", "type": "string", "maxLength": 24},
+        "title": {"type": "string"},
+        "url": {"description": "The source's home page.", "type": "string", "format": "uri"},
+        "dataset_url": {"description": "An entry's landing page; {id} is replaced by the entry's id.", "type": "string"},
+        "listing": {"description": "Where the list of datasets was read from.", "type": "string"},
+        "locations": {
+          "description": "Where every entry's files are, {id} replaced by the entry's id. An entry with its own locations uses those instead.",
+          "type": "array",
+          "items": {"$ref": "#/$defs/location"}
+        },
+        "identifier_scheme": {
+          "description": "The identifiers scheme (dataset.schema.json) by which a record in datasets/ names one of this source's entries, e.g. gdex. The catalog then links records and entries itself; without one, entries say which records use them in beacon.",
+          "type": "string"
+        },
+        "refresh": {"description": "The command that regenerates the file. Leave out for a hand-written file.", "type": "string"},
+        "notes": {"type": "string"}
+      }
+    },
+    "retrieved": {
+      "description": "When the list was read from the source, or last checked by hand (UTC).",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z)?$"
+    },
+    "counts": {
+      "description": "Written by a generator: how many datasets the source publishes, and how many it left out and why. The catalog counts the entries itself.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "published": {"type": "integer", "minimum": 0},
+        "listed": {"type": "integer", "minimum": 0},
+        "by_kind": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "left_out": {
+          "description": "Reason (kind <kind> or type <type>) to number of datasets.",
+          "type": "object",
+          "additionalProperties": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "errors": {"description": "Datasets the generator couldn't read.", "type": "array", "items": {"type": "string"}},
+    "datasets": {"type": "array", "items": {"$ref": "#/$defs/entry"}}
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["access", "path"],
+      "properties": {
+        "access": {"description": "As in dataset records: posix (a file system, e.g. GLADE), https, s3 or globus.", "enum": ["posix", "https", "s3", "globus"]},
+        "path": {"description": "A directory or URL prefix.", "type": "string"}
+      }
+    },
+    "date": {
+      "description": "YYYY, YYYY-MM or YYYY-MM-DD.",
+      "type": "string",
+      "pattern": "^[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?$"
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title"],
+      "properties": {
+        "id": {"description": "The source's own ID for the dataset.", "type": "string"},
+        "kind": {
+          "description": "What the dataset is. For generated files this may be a guess; the source's notes say how it was made.",
+          "enum": ["forecast", "analysis", "reanalysis", "observation", "simulation", "other"]
+        },
+        "title": {"type": "string"},
+        "doi": {"type": "string"},
+        "start": {"$ref": "#/$defs/date"},
+        "end": {"$ref": "#/$defs/date"},
+        "updates": {"description": "How often the source adds data, e.g. daily; left out when it no longer does.", "type": "string"},
+        "data_types": {"type": "array", "items": {"type": "string"}},
+        "formats": {"type": "array", "items": {"type": "string"}},
+        "variables": {
+          "description": "The kinds of variable BEACON compares that the dataset has. Coarse: no levels.",
+          "type": "array",
+          "items": {"enum": ["temperature", "dew_point", "humidity", "wind", "pressure", "precipitation", "geopotential_height"]}
+        },
+        "license": {"type": "string"},
+        "access": {"description": "open, or terms when the source states conditions of use (quoted in terms).", "enum": ["open", "terms"]},
+        "terms": {"type": "string"},
+        "beacon": {"description": "The records in datasets/ that use this dataset.", "type": "array", "items": {"type": "string"}},
+        "type": {"description": "The source's own status for the dataset when it isn't current, e.g. GDEX's historical.", "type": "string"},
+        "url": {"description": "Landing page, when the source's dataset_url doesn't give it.", "type": "string"},
+        "locations": {"type": "array", "items": {"$ref": "#/$defs/location"}},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}
